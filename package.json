@@ -9,9 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@microlink/react-json-view": "^1.31.20",
+    "json-to-pretty-yaml": "^1.2.2",
+    "lodash": "^4.18.1",
     "next": "16.2.4",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
