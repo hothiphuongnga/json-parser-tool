@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 type ParsedValue =
   | string
@@ -47,6 +47,8 @@ type DiffLine = {
   changed: boolean;
   changeType: "added" | "removed" | "modified" | "unchanged";
 };
+
+type DragTarget = "workspace" | "diff";
 
 const SAMPLE_JSON = `{
   "name": "John",
@@ -395,11 +397,69 @@ export default function Home() {
   const [selectedPath, setSelectedPath] = useState("$");
   const [history, setHistory] = useState<HistoryEntry[]>(readHistory);
   const [showHistory, setShowHistory] = useState(false);
+  const [workspaceSplit, setWorkspaceSplit] = useState(50);
+  const [diffSplit, setDiffSplit] = useState(50);
+  const [dragTarget, setDragTarget] = useState<DragTarget | null>(null);
+  const [canResizeWorkspace, setCanResizeWorkspace] = useState(false);
+  const [canResizeDiff, setCanResizeDiff] = useState(false);
   const fileInputId = useId();
+  const workspaceRef = useRef<HTMLElement | null>(null);
+  const diffCompareRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     window.localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   }, [history]);
+
+  useEffect(() => {
+    function syncResizeAvailability() {
+      setCanResizeWorkspace(window.innerWidth > 1100);
+      setCanResizeDiff(window.innerWidth > 720);
+    }
+
+    syncResizeAvailability();
+    window.addEventListener("resize", syncResizeAvailability);
+
+    return () => window.removeEventListener("resize", syncResizeAvailability);
+  }, []);
+
+  useEffect(() => {
+    if (!dragTarget || (dragTarget === "workspace" && !canResizeWorkspace) || (dragTarget === "diff" && !canResizeDiff)) {
+      return;
+    }
+
+    function handlePointerMove(event: MouseEvent) {
+      const container = dragTarget === "workspace" ? workspaceRef.current : diffCompareRef.current;
+      if (!container) {
+        return;
+      }
+
+      const rect = container.getBoundingClientRect();
+      if (rect.width <= 0) {
+        return;
+      }
+
+      const percent = ((event.clientX - rect.left) / rect.width) * 100;
+      const clamped = Math.min(75, Math.max(25, percent));
+
+      if (dragTarget === "workspace") {
+        setWorkspaceSplit(clamped);
+      } else {
+        setDiffSplit(clamped);
+      }
+    }
+
+    function handlePointerUp() {
+      setDragTarget(null);
+    }
+
+    window.addEventListener("mousemove", handlePointerMove);
+    window.addEventListener("mouseup", handlePointerUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handlePointerMove);
+      window.removeEventListener("mouseup", handlePointerUp);
+    };
+  }, [canResizeDiff, canResizeWorkspace, dragTarget]);
 
   const parsed = useMemo(() => parseInput(input), [input]);
   const comparedParsed = useMemo(() => parseInput(compareInput), [compareInput]);
@@ -651,7 +711,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="workspace">
+      <section
+        className={`workspace ${dragTarget === "workspace" ? "is-resizing" : ""}`}
+        ref={workspaceRef}
+        style={
+          canResizeWorkspace
+            ? { gridTemplateColumns: `${workspaceSplit}% 10px minmax(0, ${100 - workspaceSplit}%)` }
+            : undefined
+        }
+      >
         <div className="panel input-panel">
           <div className="panel-header">
             <span>Input JSON</span>
@@ -696,6 +764,19 @@ export default function Home() {
             </div>
           ) : null}
         </div>
+
+        <button
+          aria-label="Resize panels"
+          className="resize-handle resize-handle-workspace"
+          onMouseDown={() => {
+            if (canResizeWorkspace) {
+              setDragTarget("workspace");
+            }
+          }}
+          type="button"
+        >
+          <span />
+        </button>
 
         <div className="panel output-panel">
           <div className="tabs">
@@ -761,7 +842,6 @@ export default function Home() {
               </div>
             ) : activeTab === "diff" ? (
               <div className="diff-view">
-                <div className="diff-tip">Tip: Paste a URL or curl command to compare with live API data in real-time!</div>
 
                 <div className="diff-editor-shell">
                   <div className="diff-editor-header">Compare JSON</div>
@@ -797,7 +877,15 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="diff-compare">
+                <div
+                  className={`diff-compare ${dragTarget === "diff" ? "is-resizing" : ""}`}
+                  ref={diffCompareRef}
+                  style={
+                    canResizeDiff
+                      ? { gridTemplateColumns: `${diffSplit}% 10px minmax(0, ${100 - diffSplit}%)` }
+                      : undefined
+                  }
+                >
                   <div className="diff-column">
                     <div className="diff-column-header">Input JSON</div>
                     <div className="diff-lines">
@@ -809,6 +897,19 @@ export default function Home() {
                       ))}
                     </div>
                   </div>
+
+                  <button
+                    aria-label="Resize diff columns"
+                    className="resize-handle resize-handle-diff"
+                    onMouseDown={() => {
+                      if (canResizeDiff) {
+                        setDragTarget("diff");
+                      }
+                    }}
+                    type="button"
+                  >
+                    <span />
+                  </button>
 
                   <div className="diff-column">
                     <div className="diff-column-header">Compare JSON</div>

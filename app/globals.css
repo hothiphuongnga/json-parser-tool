@@ -158,7 +158,7 @@ button {
   height: 100vh;
   max-height: 100vh;
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+  grid-template-columns: minmax(320px, 1fr) 10px minmax(320px, 1fr);
   min-height: 0;
   overflow: hidden;
   padding-top: var(--topbar-height);
@@ -174,6 +174,43 @@ button {
   overflow: hidden;
   background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(8px);
+}
+
+.resize-handle {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: linear-gradient(180deg, rgba(230, 228, 247, 0.9), rgba(215, 212, 239, 0.95));
+  cursor: col-resize;
+}
+
+.resize-handle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(103, 95, 181, 0);
+  transition: background-color 140ms ease;
+}
+
+.resize-handle:hover::before,
+.is-resizing > .resize-handle::before,
+.resize-handle:focus-visible::before {
+  background: rgba(103, 95, 181, 0.12);
+}
+
+.resize-handle span {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 4px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(103, 95, 181, 0.45);
+  transform: translate(-50%, -50%); 
+}
+
+.resize-handle-workspace {
+  height: calc(100vh - var(--topbar-height) - var(--statusbar-height));
+  max-height: calc(100vh - var(--topbar-height) - var(--statusbar-height));
 }
 
 .input-panel {
@@ -209,7 +246,7 @@ button {
   color: #fff;
   padding: 0 16px; 
   min-height: 26px;
-  font-size: 0.74rem;
+  font-size: 0.74rem; 
 }
 
 .editor-wrap {
@@ -567,7 +604,7 @@ button {
 
 .diff-compare {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 10px 1fr;
   gap: 14px;
 }
 
@@ -576,6 +613,15 @@ button {
   border: 1px solid #dbd8f1;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.96);
+}
+
+.resize-handle-diff {
+  min-height: 100%;
+  border-radius: 999px;
+}
+
+.resize-handle-diff span {
+  height: 56px;
 }
 
 .diff-lines {
@@ -667,30 +713,98 @@ button {
   font-size: 0.82rem;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1280px) {
+  .topbar {
+    padding: 14px 18px;
+    gap: 14px;
+  }
+
+  .brand {
+    font-size: 0.96rem;
+  }
+
+  .toolbar {
+    gap: 8px;
+  }
+
   .workspace {
+    grid-template-columns: minmax(280px, 1fr) 10px minmax(280px, 1fr);
+  }
+
+  .editor {
+    font-size: 0.96rem;
+  }
+
+  .tabs {
+    padding-inline: 8px;
+  }
+}
+
+@media (max-width: 1100px) {
+  body {
+    overflow: auto;
+  }
+
+  .parser-shell {
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
+  }
+
+  .topbar {
+    position: sticky;
+    padding: 12px 16px;
+  }
+
+  .toolbar {
+    justify-content: flex-start;
+  }
+
+  .workspace {
+    height: auto;
+    max-height: none;
     grid-template-columns: 1fr;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .input-panel {
     border-right: 0;
     border-bottom: 1px solid var(--border);
   }
+
+  .panel {
+    height: auto;
+    max-height: none;
+    min-height: 380px;
+  }
+
+  .resize-handle-workspace {
+    display: none;
+  }
+
+  .output-body {
+    min-height: 360px;
+  }
+
+  .pathbar,
+  .statusbar {
+    position: static;
+    inset: auto;
+  }
 }
 
 @media (max-width: 720px) {
   .parser-shell {
-    height: 100dvh;
+    min-height: 100dvh;
   }
 
   .workspace {
-    height: 100dvh;
-    max-height: 100dvh;
+    min-height: 0;
   }
 
   .panel {
-    height: calc(100dvh - var(--topbar-height) - var(--statusbar-height));
-    max-height: calc(100dvh - var(--topbar-height) - var(--statusbar-height));
+    min-height: 320px;
   }
 
   .topbar,
@@ -703,11 +817,58 @@ button {
   .topbar {
     align-items: flex-start;
     flex-direction: column;
+    min-height: auto;
   }
 
   .toolbar {
     width: 100%;
     justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .btn,
+  .mini-btn,
+  .tab {
+    border-radius: 8px;
+  }
+
+  .btn {
+    min-height: 30px;
+    padding-inline: 12px;
+    font-size: 0.78rem;
+  }
+
+  .panel-header,
+  .tabs {
+    min-height: 40px;
+  }
+
+  .panel-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 8px 12px;
+  }
+
+  .panel-tools {
+    width: 100%;
+    justify-content: space-between;
+    font-size: 0.78rem;
+  }
+
+  .tab {
+    min-height: 40px;
+    padding-inline: 10px;
+    font-size: 0.76rem;
+  }
+
+  .editor {
+    padding: 12px;
+    font-size: 0.92rem;
+  }
+
+  .line-gutter {
+    padding: 12px 8px;
+    font-size: 0.82rem;
   }
 
   .editor-wrap {
@@ -723,13 +884,45 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .resize-handle-diff {
+    display: none;
+  }
+
+  .text-view,
+  .diff-view,
+  .tree-view,
+  .code-view,
+  .error-box,
+  .empty-state {
+    padding: 12px;
+  }
+
+  .text-view {
+    gap: 14px;
+  }
+
   .text-card-header {
     align-items: flex-start;
     flex-direction: column;
+    gap: 10px;
+    padding: 10px 12px;
   }
 
   .text-copy-btn {
     align-self: flex-end;
+  }
+
+  .text-card-value,
+  .diff-editor,
+  .diff-line-code {
+    padding: 12px;
+  }
+
+  .diff-tip,
+  .diff-toolbar,
+  .diff-editor-header,
+  .diff-column-header {
+    padding-inline: 12px;
   }
 
   .diff-compare {
@@ -739,5 +932,58 @@ button {
   .statusbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    padding: 10px 12px;
+  }
+
+  .brand {
+    font-size: 0.9rem;
+  }
+
+  .toolbar {
+    gap: 5px;
+  }
+
+  .btn {
+    min-height: 28px;
+    padding-inline: 10px;
+    font-size: 0.74rem;
+  }
+
+  .panel-header,
+  .tabs,
+  .tab {
+    min-height: 38px;
+  }
+
+  .tab {
+    padding-inline: 8px;
+    font-size: 0.72rem;
+  }
+
+  .mini-btn,
+  .text-copy-btn,
+  .diff-btn {
+    min-height: 30px;
+    padding-inline: 10px;
+    font-size: 0.74rem;
+  }
+
+  .diff-line {
+    grid-template-columns: 38px minmax(0, 1fr);
+    font-size: 0.84rem;
+  }
+
+  .diff-line-number {
+    padding-inline: 6px;
+  }
+
+  .pathbar,
+  .statusbar {
+    font-size: 0.76rem;
   }
 }
