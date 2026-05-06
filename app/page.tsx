@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type ParsedValue =
   | string
@@ -49,6 +51,8 @@ type DiffLine = {
 };
 
 type DragTarget = "workspace" | "diff";
+
+type MarkdownMode = "table-render" | "table-source" | "plain-render" | "plain-source";
 
 const SAMPLE_JSON = `{
   "name": "John",
@@ -254,9 +258,10 @@ function objectToXml(value: ParsedValue, nodeName = '?xml version="1.0" encoding
 function objectToMarkdown(value: ParsedValue) {
   if (!Array.isArray(value) || value.length === 0) {
     if (value && typeof value === "object") {
-      return Object.entries(value)
+      const body = Object.entries(value)
         .map(([key, item]) => `- **${key}**: \`${typeof item === "object" ? JSON.stringify(item) : String(item)}\``)
         .join("\n");
+      return `# JSON Data\n\n${body}`;
     }
     return "No tabular data available.";
   }
@@ -271,9 +276,10 @@ function objectToMarkdown(value: ParsedValue) {
   }
 
   const headers = Array.from(new Set(objectRows.flatMap((item) => Object.keys(item))));
-  const head = `| ${headers.join(" | ")} |`;
-  const divider = `| ${headers.map(() => "---").join(" | ")} |`;
-  const rows = objectRows.map((item) => {
+  const allHeaders = ["#", ...headers];
+  const head = `| ${allHeaders.join(" | ")} |`;
+  const divider = `| ${allHeaders.map(() => "---").join(" | ")} |`;
+  const rows = objectRows.map((item, index) => {
     const cells = headers.map((header) => {
       const cell = item[header];
       if (cell === null || cell === undefined) {
@@ -281,10 +287,51 @@ function objectToMarkdown(value: ParsedValue) {
       }
       return typeof cell === "object" ? JSON.stringify(cell) : String(cell);
     });
-    return `| ${cells.join(" | ")} |`;
+    return `| ${[String(index), ...cells].join(" | ")} |`;
   });
 
-  return [head, divider, ...rows].join("\n");
+  return ["# JSON Data", "", head, divider, ...rows].join("\n");
+}
+
+function objectToPlainMarkdown(value: ParsedValue, heading = "JSON Data"): string {
+  const lines: string[] = [`# ${heading}`, ""];
+
+  function walk(node: ParsedValue, label: string, depth = 2) {
+    if (Array.isArray(node)) {
+      node.forEach((item, index) => {
+        lines.push(`${"#".repeat(depth)} ${label}.${index}`);
+        lines.push("");
+        walk(item, `${label}.${index}`, depth + 1);
+      });
+      return;
+    }
+
+    if (node && typeof node === "object") {
+      const entries = Object.entries(node);
+      if (label !== heading) {
+        lines.push(`${"#".repeat(depth)} ${label}`);
+        lines.push("");
+      }
+
+      entries.forEach(([key, item]) => {
+        if (item && typeof item === "object") {
+          walk(item, key, depth + 1);
+          return;
+        }
+
+        lines.push(`- **${key}:** ${String(item)}`);
+      });
+
+      lines.push("");
+      return;
+    }
+
+    lines.push(`- ${String(node)}`);
+    lines.push("");
+  }
+
+  walk(value, heading);
+  return lines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
 function diffLines(original: string, formatted: string): DiffLine[] {
@@ -397,6 +444,7 @@ export default function Home() {
   const [selectedPath, setSelectedPath] = useState("$");
   const [history, setHistory] = useState<HistoryEntry[]>(readHistory);
   const [showHistory, setShowHistory] = useState(false);
+  const [markdownMode, setMarkdownMode] = useState<MarkdownMode>("table-render");
   const [workspaceSplit, setWorkspaceSplit] = useState(50);
   const [diffSplit, setDiffSplit] = useState(50);
   const [dragTarget, setDragTarget] = useState<DragTarget | null>(null);
@@ -470,6 +518,7 @@ export default function Home() {
   const pythonOutput = parsed.valid ? stringifyJsLike(parsed.value as ParsedValue, "python") : "";
   const xmlOutput = parsed.valid ? objectToXml(parsed.value as ParsedValue) : "";
   const markdownOutput = parsed.valid ? objectToMarkdown(parsed.value as ParsedValue) : "";
+  const markdownPlainOutput = parsed.valid ? objectToPlainMarkdown(parsed.value as ParsedValue) : "";
   const diffLeftSource = parsed.valid ? JSON.stringify(parsed.value, null, 2) : parsed.normalized;
   const diffRightSource = comparedParsed.valid
     ? JSON.stringify(comparedParsed.value, null, 2)
@@ -653,7 +702,9 @@ export default function Home() {
       case "xml":
         return xmlOutput;
       case "markdown":
-        return markdownOutput;
+        return markdownMode === "plain-source" || markdownMode === "plain-render"
+          ? markdownPlainOutput
+          : markdownOutput;
       default:
         return prettyOutput;
     }
@@ -661,6 +712,41 @@ export default function Home() {
 
   return (
     <main className="parser-shell">
+      <div
+        aria-hidden={!showHistory}
+        className={`history-overlay ${showHistory ? "open" : ""}`}
+        onClick={() => setShowHistory(false)}
+      />
+      <aside aria-hidden={!showHistory} className={`history-drawer ${showHistory ? "open" : ""}`}>
+        <div className="history-drawer-header">
+          <div>
+            <strong>History</strong>
+            <p>Recent JSON snapshots</p>
+          </div>
+          <button className="history-close-btn" onClick={() => setShowHistory(false)} type="button">
+            Close
+          </button>
+        </div>
+        <div className="history-box">
+          {history.length === 0 ? <p>No history yet.</p> : null}
+          {history?.map((item) => (
+            <button
+              className="history-item"
+              key={item.id}
+              onClick={() => {
+                setInput(item.input);
+                setStatusMessage(`Loaded history from ${item.createdAt}`);
+                setShowHistory(false);
+              }}
+              type="button"
+            >
+              <strong>{item.createdAt}</strong>
+              <span>{item.preview}</span>
+            </button>
+          ))}
+        </div>
+      </aside>
+
       <section className="topbar">
         <div className="brand">JSON Parser Online</div>
         <div className="toolbar">
@@ -743,26 +829,6 @@ export default function Home() {
               value={input}
             />
           </div>
-          {showHistory ? (
-            <div className="history-box">
-              {history.length === 0 ? <p>No history yet.</p> : null}
-              {history.map((item) => (
-                <button
-                  className="history-item"
-                  key={item.id}
-                  onClick={() => {
-                    setInput(item.input);
-                    setStatusMessage(`Loaded history from ${item.createdAt}`);
-                    setShowHistory(false);
-                  }}
-                  type="button"
-                >
-                  <strong>{item.createdAt}</strong>
-                  <span>{item.preview}</span>
-                </button>
-              ))}
-            </div>
-          ) : null}
         </div>
 
         <button
@@ -795,7 +861,7 @@ export default function Home() {
                 {tab.label}
               </button>
             ))}
-            {activeTab !== "text" && activeTab !== "diff" ? (
+            {activeTab !== "text" && activeTab !== "diff" && activeTab !== "markdown" ? (
               <button className="mini-btn copy-output" onClick={() => copyText(currentOutput(), "Output copied")} type="button">
                 Copy
               </button>
@@ -923,6 +989,66 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+              </div>
+            ) : activeTab === "markdown" ? (
+              <div className="markdown-view">
+                <div className="markdown-toolbar">
+                  <div className="markdown-modes">
+                    <button
+                      className={`markdown-mode-btn ${markdownMode === "table-render" ? "active" : ""}`}
+                      onClick={() => setMarkdownMode("table-render")}
+                      type="button"
+                    >
+                      Table Render
+                    </button>
+                    <button
+                      className={`markdown-mode-btn ${markdownMode === "table-source" ? "active" : ""}`}
+                      onClick={() => setMarkdownMode("table-source")}
+                      type="button"
+                    >
+                      Table Source
+                    </button>
+                    <span className="markdown-mode-divider" />
+                    <button
+                      className={`markdown-mode-btn ${markdownMode === "plain-render" ? "active" : ""}`}
+                      onClick={() => setMarkdownMode("plain-render")}
+                      type="button"
+                    >
+                      Plain Render
+                    </button>
+                    <button
+                      className={`markdown-mode-btn ${markdownMode === "plain-source" ? "active" : ""}`}
+                      onClick={() => setMarkdownMode("plain-source")}
+                      type="button"
+                    >
+                      Plain Source
+                    </button>
+                  </div>
+
+                  <button className="markdown-copy-btn" onClick={() => copyText(currentOutput(), "Markdown copied")} type="button">
+                    Copy
+                  </button>
+                </div>
+
+                {markdownMode === "table-source" ? (
+                  <pre className="code-view markdown-source-view">{markdownOutput}</pre>
+                ) : null}
+
+                {markdownMode === "plain-source" ? (
+                  <pre className="code-view markdown-source-view">{markdownPlainOutput}</pre>
+                ) : null}
+
+                {markdownMode === "table-render" ? (
+                  <div className="markdown-render">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdownOutput}</ReactMarkdown>
+                  </div>
+                ) : null}
+
+                {markdownMode === "plain-render" ? (
+                  <div className="markdown-render">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdownPlainOutput}</ReactMarkdown>
+                  </div>
+                ) : null}
               </div>
             ) : (
               <pre className="code-view">{currentOutput()}</pre>
