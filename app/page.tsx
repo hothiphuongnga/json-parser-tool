@@ -41,6 +41,13 @@ type TextViewEntry = {
   value: string;
 };
 
+type DiffLine = {
+  original: string;
+  formatted: string;
+  changed: boolean;
+  changeType: "added" | "removed" | "modified" | "unchanged";
+};
+
 const SAMPLE_JSON = `{
   "name": "John",
   "age": 30,
@@ -220,7 +227,7 @@ function stringifyJsLike(value: ParsedValue, mode: "js" | "php" | "python", inde
   return `{\n${body}\n${pad}}`;
 }
 
-function objectToXml(value: ParsedValue, nodeName = "root", indent = 0): string {
+function objectToXml(value: ParsedValue, nodeName = '?xml version="1.0" encoding="UTF-8"?', indent = 0): string {
   const pad = "  ".repeat(indent);
 
   if (value === null) {
@@ -278,7 +285,7 @@ function objectToMarkdown(value: ParsedValue) {
   return [head, divider, ...rows].join("\n");
 }
 
-function diffLines(original: string, formatted: string) {
+function diffLines(original: string, formatted: string): DiffLine[] {
   const left = original.split("\n");
   const right = formatted.split("\n");
   const max = Math.max(left.length, right.length);
@@ -287,6 +294,14 @@ function diffLines(original: string, formatted: string) {
     original: left[index] ?? "",
     formatted: right[index] ?? "",
     changed: (left[index] ?? "") !== (right[index] ?? ""),
+    changeType:
+      !(left[index] ?? "") && (right[index] ?? "")
+        ? "added"
+        : (left[index] ?? "") && !(right[index] ?? "")
+          ? "removed"
+          : (left[index] ?? "") !== (right[index] ?? "")
+            ? "modified"
+            : "unchanged",
   }));
 }
 
@@ -372,6 +387,7 @@ function TreeNode({ label, value, path, depth = 0, onSelectPath }: TreeNodeProps
 export default function Home() {
   const initialSharedInput = readSharedInput();
   const [input, setInput] = useState(initialSharedInput);
+  const [compareInput, setCompareInput] = useState("");
   const [activeTab, setActiveTab] = useState<ViewTab>("tree");
   const [statusMessage, setStatusMessage] = useState(
     initialSharedInput ? "Loaded shared data" : "",
@@ -386,6 +402,7 @@ export default function Home() {
   }, [history]);
 
   const parsed = useMemo(() => parseInput(input), [input]);
+  const comparedParsed = useMemo(() => parseInput(compareInput), [compareInput]);
   const prettyOutput = parsed.valid ? JSON.stringify(parsed.value, null, 2) : "";
   const minifiedOutput = parsed.valid ? JSON.stringify(parsed.value) : "";
   const textOutput = parsed.valid ? stringifyJsLike(parsed.value as ParsedValue, "js") : "";
@@ -393,8 +410,26 @@ export default function Home() {
   const pythonOutput = parsed.valid ? stringifyJsLike(parsed.value as ParsedValue, "python") : "";
   const xmlOutput = parsed.valid ? objectToXml(parsed.value as ParsedValue) : "";
   const markdownOutput = parsed.valid ? objectToMarkdown(parsed.value as ParsedValue) : "";
-  const diffOutput = parsed.valid ? diffLines(parsed.normalized, prettyOutput) : [];
+  const diffLeftSource = parsed.valid ? JSON.stringify(parsed.value, null, 2) : parsed.normalized;
+  const diffRightSource = comparedParsed.valid
+    ? JSON.stringify(comparedParsed.value, null, 2)
+    : sanitizeInput(compareInput).trim();
+  const diffOutput = useMemo(
+    () => (input.trim() || compareInput.trim() ? diffLines(diffLeftSource, diffRightSource) : []),
+    [compareInput, diffLeftSource, diffRightSource, input],
+  );
   const textViewEntries = parsed.valid ? flattenTextView(parsed.value as ParsedValue) : [];
+  const diffStats = useMemo(
+    () =>
+      diffOutput.reduce(
+        (summary, line) => {
+          summary[line.changeType] += 1;
+          return summary;
+        },
+        { added: 0, removed: 0, modified: 0, unchanged: 0 },
+      ),
+    [diffOutput],
+  );
   const charCount = input.length;
   const status = useMemo(() => {
     if (statusMessage) {
@@ -485,6 +520,7 @@ export default function Home() {
 
   function handleClear() {
     setInput("");
+    setCompareInput("");
     setSelectedPath("$");
     setStatusMessage("Cleared");
   }
@@ -500,6 +536,17 @@ export default function Home() {
       setStatusMessage(`Loaded ${file.name}`);
       saveToHistory(text);
     });
+  }
+
+  function handleSwapDiff() {
+    setInput(compareInput);
+    setCompareInput(input);
+    setStatusMessage("Swapped compare panes");
+  }
+
+  function handleClearDiff() {
+    setCompareInput("");
+    setStatusMessage("Cleared compare JSON");
   }
 
   async function handleShare() {
@@ -656,13 +703,18 @@ export default function Home() {
               <button
                 className={`tab ${activeTab === tab.id ? "active" : ""}`}
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (tab.id === "diff" && !compareInput.trim() && input.trim()) {
+                    setCompareInput(input);
+                  }
+                  setActiveTab(tab.id);
+                }}
                 type="button"
               >
                 {tab.label}
               </button>
             ))}
-            {activeTab !== "text" ? (
+            {activeTab !== "text" && activeTab !== "diff" ? (
               <button className="mini-btn copy-output" onClick={() => copyText(currentOutput(), "Output copied")} type="button">
                 Copy
               </button>
@@ -709,12 +761,67 @@ export default function Home() {
               </div>
             ) : activeTab === "diff" ? (
               <div className="diff-view">
-                {diffOutput.map((line, index) => (
-                  <div className={`diff-row ${line.changed ? "changed" : ""}`} key={`${index}-${line.original}-${line.formatted}`}>
-                    <div className="diff-cell">{line.original || " "}</div>
-                    <div className="diff-cell">{line.formatted || " "}</div>
+                <div className="diff-tip">Tip: Paste a URL or curl command to compare with live API data in real-time!</div>
+
+                <div className="diff-editor-shell">
+                  <div className="diff-editor-header">Compare JSON</div>
+                  <textarea
+                    className="diff-editor"
+                    onChange={(event) => {
+                      setCompareInput(event.target.value);
+                      setStatusMessage("");
+                    }}
+                    placeholder="Paste JSON to compare against the input JSON..."
+                    spellCheck={false}
+                    value={compareInput}
+                  />
+                </div>
+
+                <div className="diff-toolbar">
+                  <div className="diff-actions">
+                    <button className="diff-btn" onClick={handleSwapDiff} type="button">
+                      Swap
+                    </button>
+                    <button className="diff-btn diff-btn-muted" onClick={handleClearDiff} type="button">
+                      Clear
+                    </button>
+                    <button className="diff-btn diff-btn-copy" onClick={() => copyText(compareInput, "Compare JSON copied")} type="button">
+                      Copy
+                    </button>
                   </div>
-                ))}
+                  <div className="diff-stats">
+                    <span className="diff-stat diff-stat-added">{diffStats.added} Added</span>
+                    <span className="diff-stat diff-stat-removed">{diffStats.removed} Removed</span>
+                    <span className="diff-stat diff-stat-modified">{diffStats.modified} Modified</span>
+                    <span className="diff-stat">{diffStats.unchanged} Unchanged</span>
+                  </div>
+                </div>
+
+                <div className="diff-compare">
+                  <div className="diff-column">
+                    <div className="diff-column-header">Input JSON</div>
+                    <div className="diff-lines">
+                      {diffOutput.map((line, index) => (
+                        <div className={`diff-line ${line.changeType !== "unchanged" ? `is-${line.changeType}` : ""}`} key={`left-${index}-${line.original}`}>
+                          <span className="diff-line-number">{index + 1}</span>
+                          <span className="diff-line-code">{line.original || " "}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="diff-column">
+                    <div className="diff-column-header">Compare JSON</div>
+                    <div className="diff-lines">
+                      {diffOutput.map((line, index) => (
+                        <div className={`diff-line ${line.changeType !== "unchanged" ? `is-${line.changeType}` : ""}`} key={`right-${index}-${line.formatted}`}>
+                          <span className="diff-line-number">{index + 1}</span>
+                          <span className="diff-line-code">{line.formatted || " "}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <pre className="code-view">{currentOutput()}</pre>
