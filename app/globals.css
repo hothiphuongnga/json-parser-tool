@@ -315,6 +315,7 @@ button {
 .empty-state,
 .error-box,
 .code-view,
+.text-view,
 .tree-view,
 .diff-view {
   min-height: 100%;
@@ -342,6 +343,68 @@ button {
   color: #40395d;
   font-size: 0.95rem;
   line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+}
+
+.text-view {
+  display: grid;
+  gap: 22px;
+  align-content: start;
+  background: linear-gradient(180deg, rgba(252, 252, 255, 0.92), rgba(246, 245, 255, 0.9));
+}
+
+.text-card { 
+  overflow: hidden;
+  border: 1px solid #d9d7ef;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 24px rgba(91, 86, 118, 0.08);
+}
+
+.text-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #d9d7ef;
+  background: #f4f3fd;
+}
+
+.text-card-path {
+  color: #5f60b4;
+  font-size: 0.98rem;
+  font-weight: 700;
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  word-break: break-word;
+}
+
+.text-copy-btn {
+  flex-shrink: 0;
+  min-height: 34px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #6660bb;
+  color: #fff;
+  font-weight: 700;
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease;
+}
+
+.text-copy-btn:hover {
+  transform: translateY(-1px);
+  background: #5750ab;
+}
+
+.text-card-value {
+  padding: 18px;
+  color: #363948;
+  font-size: 0.96rem;
+  line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-word;
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
@@ -489,6 +552,15 @@ button {
 
   .diff-row {
     grid-template-columns: 1fr;
+  }
+
+  .text-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .text-copy-btn {
+    align-self: flex-end;
   }
 
   .statusbar {

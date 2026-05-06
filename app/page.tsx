@@ -36,6 +36,11 @@ type TreeNodeProps = {
   onSelectPath: (path: string) => void;
 };
 
+type TextViewEntry = {
+  path: string;
+  value: string;
+};
+
 const SAMPLE_JSON = `{
   "name": "John",
   "age": 30,
@@ -285,6 +290,31 @@ function diffLines(original: string, formatted: string) {
   }));
 }
 
+function flattenTextView(value: ParsedValue, path = "$"): TextViewEntry[] {
+  if (value === null) {
+    return [{ path, value: "null" }];
+  }
+
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return [{ path, value: String(value) }];
+  }
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return [{ path, value: "[]" }];
+    }
+
+    return value.flatMap((item, index) => flattenTextView(item, `${path}[${index}]`));
+  }
+
+  const entries = Object.entries(value);
+  if (entries.length === 0) {
+    return [{ path, value: "{}" }];
+  }
+
+  return entries.flatMap(([key, item]) => flattenTextView(item, `${path}.${key}`));
+}
+
 function TreeNode({ label, value, path, depth = 0, onSelectPath }: TreeNodeProps) {
   const [open, setOpen] = useState(depth < 1);
   const isExpandable = typeof value === "object" && value !== null;
@@ -364,6 +394,7 @@ export default function Home() {
   const xmlOutput = parsed.valid ? objectToXml(parsed.value as ParsedValue) : "";
   const markdownOutput = parsed.valid ? objectToMarkdown(parsed.value as ParsedValue) : "";
   const diffOutput = parsed.valid ? diffLines(parsed.normalized, prettyOutput) : [];
+  const textViewEntries = parsed.valid ? flattenTextView(parsed.value as ParsedValue) : [];
   const charCount = input.length;
   const status = useMemo(() => {
     if (statusMessage) {
@@ -631,9 +662,11 @@ export default function Home() {
                 {tab.label}
               </button>
             ))}
-            <button className="mini-btn copy-output" onClick={() => copyText(currentOutput(), "Output copied")} type="button">
-              Copy
-            </button>
+            {activeTab !== "text" ? (
+              <button className="mini-btn copy-output" onClick={() => copyText(currentOutput(), "Output copied")} type="button">
+                Copy
+              </button>
+            ) : null}
           </div>
 
           <div className="output-body">
@@ -647,6 +680,32 @@ export default function Home() {
             ) : activeTab === "tree" ? (
               <div className="tree-view">
                 <TreeNode label="$" onSelectPath={setSelectedPath} path="$" value={parsed.value as ParsedValue} />
+              </div>
+            ) : activeTab === "text" ? (
+              <div className="text-view">
+                {textViewEntries.map((entry) => (
+                  <article
+                    className="text-card"
+                    key={`${entry.path}-${entry.value}`}
+                    onClick={() => setSelectedPath(entry.path)}
+                  >
+                    <header className="text-card-header">
+                      <span className="text-card-path">{entry.path}</span>
+                      <button
+                        className="text-copy-btn"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          void copyText(entry.value, `Copied ${entry.path}`);
+                          setSelectedPath(entry.path);
+                        }}
+                        type="button"
+                      >
+                        Copy
+                      </button>
+                    </header>
+                    <div className="text-card-value">{entry.value}</div>
+                  </article>
+                ))}
               </div>
             ) : activeTab === "diff" ? (
               <div className="diff-view">
