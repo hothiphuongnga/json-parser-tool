@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -779,6 +780,12 @@ export default function Home() {
               ))}
             </select>
           </label>
+          <Link className="btn btn-muted tool-link" href="/json-to-type">
+            JSON to Type
+          </Link>
+          <Link className="btn btn-muted tool-link" href="/lunar-calendar">
+            Lịch âm
+          </Link>
           <button
             className="btn btn-muted"
             onClick={() => setStatusMessage("JSON parser with formatter, tree view and converters.")}
