@@ -287,7 +287,14 @@ function toDateInputValue(date: Date) {
 }
 
 function parseDateInput(value: string) {
-  const [year, month, day] = value.split("-").map(Number);
+  const normalized = value.trim();
+  const parts = normalized.includes("-")
+    ? normalized.split("-").map(Number)
+    : normalized.split(/[/.]/).map(Number);
+  const [year, month, day] = normalized.includes("-")
+    ? parts
+    : [parts[2], parts[1], parts[0]];
+
   if (!year || !month || !day) {
     return null;
   }
@@ -303,6 +310,20 @@ function parseDateInput(value: string) {
 function parseLookupNumber(value: string) {
   const next = Number(value);
   return Number.isInteger(next) ? next : null;
+}
+
+function formatSolarLookupInput(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 8);
+
+  if (digits.length <= 2) {
+    return digits;
+  }
+
+  if (digits.length <= 4) {
+    return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  }
+
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
 
 function canChiYear(year: number) {
@@ -372,7 +393,7 @@ export default function LunarCalendarPage() {
   );
   const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selectedDate, setSelectedDate] = useState(today);
-  const [solarLookup, setSolarLookup] = useState(toDateInputValue(today));
+  const [solarLookup, setSolarLookup] = useState(formatSolarDate(today));
   const [lunarLookup, setLunarLookup] = useState<LunarLookup>({
     day: String(todayLunar.day),
     month: String(todayLunar.month),
@@ -389,6 +410,10 @@ export default function LunarCalendarPage() {
     }
 
     return convertSolarToLunar(date.getDate(), date.getMonth() + 1, date.getFullYear());
+  }, [solarLookup]);
+  const solarPickerValue = useMemo(() => {
+    const date = parseDateInput(solarLookup);
+    return date ? toDateInputValue(date) : "";
   }, [solarLookup]);
   const lunarLookupResult = useMemo(() => {
     const day = parseLookupNumber(lunarLookup.day);
@@ -410,13 +435,13 @@ export default function LunarCalendarPage() {
     const next = new Date();
     setSelectedDate(next);
     setViewDate(new Date(next.getFullYear(), next.getMonth(), 1));
-    setSolarLookup(toDateInputValue(next));
+    setSolarLookup(formatSolarDate(next));
   }
 
   function pickDate(date: Date) {
     const lunar = convertSolarToLunar(date.getDate(), date.getMonth() + 1, date.getFullYear());
     setSelectedDate(date);
-    setSolarLookup(toDateInputValue(date));
+    setSolarLookup(formatSolarDate(date));
     setLunarLookup({
       day: String(lunar.day),
       month: String(lunar.month),
@@ -426,9 +451,10 @@ export default function LunarCalendarPage() {
   }
 
   function handleSolarLookupChange(value: string) {
-    setSolarLookup(value);
+    const formatted = formatSolarLookupInput(value);
+    setSolarLookup(formatted);
 
-    const date = parseDateInput(value);
+    const date = parseDateInput(formatted);
     if (!date) {
       return;
     }
@@ -445,6 +471,15 @@ export default function LunarCalendarPage() {
 
     input.focus();
     input.showPicker?.();
+  }
+
+  function handleSolarPickerChange(value: string) {
+    const date = parseDateInput(value);
+    if (!date) {
+      return;
+    }
+
+    handleSolarLookupChange(formatSolarDate(date));
   }
 
   return (
@@ -470,13 +505,22 @@ export default function LunarCalendarPage() {
             <span>Đổi dương sang âm</span>
             <label>
               Ngày dương
-              <span className="date-picker-shell" onClick={openSolarPicker}>
+              <span className="date-picker-shell">
                 <input
-                  onClick={openSolarPicker}
+                  onFocus={(event) => event.target.select()}
                   onChange={(event) => handleSolarLookupChange(event.target.value)}
-                  ref={solarInputRef}
-                  type="date"
+                  placeholder="dd/mm/yyyy"
+                  type="text"
                   value={solarLookup}
+                />
+                <input
+                  aria-hidden="true"
+                  className="native-date-input"
+                  onChange={(event) => handleSolarPickerChange(event.target.value)}
+                  ref={solarInputRef}
+                  tabIndex={-1}
+                  type="date"
+                  value={solarPickerValue}
                 />
                 <button aria-label="Mở chọn ngày dương" onClick={openSolarPicker} type="button">
                   <span aria-hidden="true">▦</span>

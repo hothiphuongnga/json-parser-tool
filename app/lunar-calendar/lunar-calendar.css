@@ -333,6 +333,17 @@
   opacity: 0;
 }
 
+.date-picker-shell .native-date-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .date-picker-shell button {
   width: 26px;
   height: 26px;
