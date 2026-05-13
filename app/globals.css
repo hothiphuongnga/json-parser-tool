@@ -1,23 +1,104 @@
 @import "tailwindcss";
 
 :root {
-  --background: #efeffa;
-  --foreground: #342f56;
+  --background: #eef7ff;
+  --foreground: #17324d;
   --topbar-height: 72px;
   --statusbar-height: 44px;
   --panel-bar-height: 44px;
   --surface: #ffffff;
+  --surface-soft: #f4faff;
+  --surface-muted: #dff0ff;
+  --border: #bfdcf4;
+  --brand: #087ec1;
+  --brand-strong: #075e93;
+  --brand-soft: #69b8e8;
+  --brand-contrast: #ffffff;
+  --brand-gradient-end: #23a9d7;
+  --body-glow: rgba(35, 169, 215, 0.24);
+  --body-start: #f6fbff;
+  --body-end: #eef7ff;
+  --overlay: rgba(12, 49, 77, 0.28);
+  --panel-bg: rgba(255, 255, 255, 0.82);
+  --panel-bar-bg: rgba(255, 255, 255, 0.76);
+  --code-text: #27445f;
+  --card-border: #c7dff3;
+  --soft-band: #eef8ff;
+  --diff-accent: #0694c6;
+  --success: #1fbe75;
+  --warning: #f7a40f;
+  --danger: #f24844;
+  --text-soft: #638096;
+  --shadow: 0 20px 50px rgba(9, 89, 140, 0.14);
+}
+
+[data-theme="green"] {
+  --background: #eefaf5;
+  --foreground: #193b33;
+  --surface-soft: #f4fcf8;
+  --surface-muted: #dff4eb;
+  --border: #bfe2d3;
+  --brand: #0c9b72;
+  --brand-strong: #087154;
+  --brand-soft: #6bcfaf;
+  --brand-gradient-end: #22b88a;
+  --body-glow: rgba(34, 184, 138, 0.23);
+  --body-start: #f7fffb;
+  --body-end: #eefaf5;
+  --overlay: rgba(17, 64, 52, 0.28);
+  --code-text: #264d42;
+  --card-border: #c6e6d8;
+  --soft-band: #eefaf5;
+  --diff-accent: #0b9570;
+  --text-soft: #668477;
+  --shadow: 0 20px 50px rgba(8, 113, 84, 0.13);
+}
+
+[data-theme="violet"] {
+  --background: #efeffa;
+  --foreground: #342f56;
   --surface-soft: #f6f6fd;
   --surface-muted: #ecebfb;
   --border: #d6d5ef;
   --brand: #675fb5;
   --brand-strong: #5850a4;
   --brand-soft: #8f89cf;
-  --success: #1fbe75;
-  --warning: #f7a40f;
-  --danger: #f24844;
+  --brand-gradient-end: #7c76c6;
+  --body-glow: rgba(133, 124, 206, 0.32);
+  --body-start: #f7f6ff;
+  --body-end: #efeffa;
+  --overlay: rgba(38, 31, 72, 0.26);
+  --code-text: #40395d;
+  --card-border: #d9d7ef;
+  --soft-band: #f4f3fd;
+  --diff-accent: #6660bb;
   --text-soft: #7b7897;
   --shadow: 0 20px 50px rgba(70, 57, 124, 0.12);
+}
+
+[data-theme="dark"] {
+  --background: #0e1724;
+  --foreground: #dbeafe;
+  --surface: #152235;
+  --surface-soft: #111d2d;
+  --surface-muted: #1e3047;
+  --border: #2c4663;
+  --brand: #38bdf8;
+  --brand-strong: #0f6c9f;
+  --brand-soft: #7dd3fc;
+  --brand-gradient-end: #2563eb;
+  --body-glow: rgba(56, 189, 248, 0.16);
+  --body-start: #0b1320;
+  --body-end: #111827;
+  --overlay: rgba(2, 10, 23, 0.62);
+  --panel-bg: rgba(21, 34, 53, 0.88);
+  --panel-bar-bg: rgba(17, 29, 45, 0.86);
+  --code-text: #dbeafe;
+  --card-border: #2c4663;
+  --soft-band: #17263a;
+  --diff-accent: #38bdf8;
+  --text-soft: #9fb3c8;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.26);
 }
 
 @theme inline {
@@ -40,8 +121,8 @@ body {
   margin: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at top left, rgba(133, 124, 206, 0.32), transparent 28%),
-    linear-gradient(180deg, #f7f6ff 0%, #efeffa 100%);
+    radial-gradient(circle at top left, var(--body-glow), transparent 28%),
+    linear-gradient(180deg, var(--body-start) 0%, var(--body-end) 100%);
   color: var(--foreground);
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
 }
@@ -80,7 +161,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 24;
-  background: rgba(38, 31, 72, 0.26);
+  background: var(--overlay);
   opacity: 0;
   pointer-events: none;
   transition: opacity 180ms ease;
@@ -98,8 +179,8 @@ button {
   width: min(360px, calc(100vw - 24px));
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  background: linear-gradient(180deg, rgba(249, 248, 255, 0.98), rgba(242, 240, 255, 0.98));
-  box-shadow: 24px 0 48px rgba(39, 31, 80, 0.18);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, transparent), color-mix(in srgb, var(--surface-soft) 98%, transparent));
+  box-shadow: 24px 0 48px color-mix(in srgb, var(--brand-strong) 20%, transparent);
   transform: translateX(-100%);
   transition: transform 220ms ease;
 }
@@ -135,7 +216,7 @@ button {
   border: 0;
   border-radius: 8px;
   background: var(--brand);
-  color: #fff;
+  color: var(--brand-contrast);
   font-size: 0.8rem;
   font-weight: 700;
 }
@@ -150,8 +231,8 @@ button {
   gap: 20px;
   min-height: var(--topbar-height);
   padding: 18px 24px;
-  background: linear-gradient(90deg, var(--brand-strong), #7c76c6);
-  color: #fff;
+  background: linear-gradient(90deg, var(--brand-strong), var(--brand-gradient-end));
+  color: var(--brand-contrast);
   box-shadow: var(--shadow);
 }
 
@@ -166,6 +247,28 @@ button {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.theme-picker {
+  display: flex;
+  align-items: center;
+}
+
+.theme-picker select {
+  min-height: 26px;
+  padding: 0 28px 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 6px;
+  outline: 0;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--brand-contrast);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.theme-picker option {
+  color: var(--foreground);
+  background: var(--surface);
 }
 
 .btn,
@@ -190,7 +293,7 @@ button {
 .btn {
   min-height: 26px;
   padding: 0 16px;
-  color: #fff;
+  color: var(--brand-contrast);
   font-size: 0.84rem; 
   background: rgba(255, 255, 255, 0.12);
 }
@@ -236,7 +339,7 @@ button {
   height: calc(100vh - var(--topbar-height) - var(--statusbar-height));
   max-height: calc(100vh - var(--topbar-height) - var(--statusbar-height));
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--panel-bg);
   backdrop-filter: blur(8px);
 }
 
@@ -244,7 +347,7 @@ button {
   position: relative;
   border: 0;
   padding: 0;
-  background: linear-gradient(180deg, rgba(230, 228, 247, 0.9), rgba(215, 212, 239, 0.95));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-muted) 70%, white), var(--surface-muted));
   cursor: col-resize;
 }
 
@@ -259,7 +362,7 @@ button {
 .resize-handle:hover::before,
 .is-resizing > .resize-handle::before,
 .resize-handle:focus-visible::before {
-  background: rgba(103, 95, 181, 0.12);
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
 }
 
 .resize-handle span {
@@ -268,7 +371,7 @@ button {
   width: 4px;
   height: 44px;
   border-radius: 999px;
-  background: rgba(103, 95, 181, 0.45);
+  background: color-mix(in srgb, var(--brand) 56%, transparent);
   transform: translate(-50%, -50%); 
 }
 
@@ -289,7 +392,7 @@ button {
   min-height: var(--panel-bar-height);
   padding: 8px 16px;
   border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--panel-bar-bg);
   color: var(--brand-strong);
   font-size: 0.74rem;
   font-weight: 700;
@@ -307,7 +410,7 @@ button {
 .mini-btn {
   border-color: var(--brand);
   background: var(--brand);
-  color: #fff;
+  color: var(--brand-contrast);
   padding: 0 16px; 
   min-height: 26px;
   font-size: 0.74rem; 
@@ -324,7 +427,7 @@ button {
 .line-gutter {
   padding: 16px 12px;
   border-right: 1px solid var(--border);
-  background: linear-gradient(180deg, #f5f4ff, #f0effd);
+  background: linear-gradient(180deg, var(--surface-soft), var(--surface-muted));
   color: var(--brand-soft);
   text-align: right;
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
@@ -340,7 +443,7 @@ button {
   padding: 16px;
   overflow: auto;
   background: transparent;
-  color: #5b5676;
+  color: var(--code-text);
   font-size: 1.02rem;
   line-height: 1.75;
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
@@ -350,7 +453,7 @@ button {
   display: grid;
   gap: 10px;
   padding: 14px;
-  background: rgba(243, 242, 255, 0.22);
+  background: color-mix(in srgb, var(--surface-muted) 28%, transparent);
   min-height: 0;
   overflow: auto;
 }
@@ -367,7 +470,7 @@ button {
   text-align: left;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   color: inherit;
 }
 
@@ -387,7 +490,7 @@ button {
   min-height: var(--panel-bar-height);
   padding: 0 10px;
   border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.88);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
   overflow-x: auto;
 }
 
@@ -418,7 +521,7 @@ button {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(248, 248, 255, 0.94));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 95%, transparent), color-mix(in srgb, var(--surface-soft) 94%, transparent));
 }
 
 .empty-state,
@@ -444,12 +547,12 @@ button {
 
 .error-box p {
   margin: 0;
-  color: #6f5c65;
+  color: var(--text-soft);
 }
 
 .code-view {
   margin: 0;
-  color: #40395d; 
+  color: var(--code-text);
   font-size: 0.95rem;
   line-height: 1.65;
   white-space: pre-wrap;
@@ -461,15 +564,15 @@ button {
   display: grid;
   gap: 22px;
   align-content: start;
-  background: linear-gradient(180deg, rgba(252, 252, 255, 0.92), rgba(246, 245, 255, 0.9));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--surface-soft) 90%, transparent));
 }
 
 .text-card { 
   overflow: hidden;
-  border: 1px solid #d9d7ef;
+  border: 1px solid var(--card-border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 8px 24px rgba(91, 86, 118, 0.08);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-strong) 10%, transparent);
 }
 
 .text-card-header {
@@ -478,12 +581,12 @@ button {
   justify-content: space-between;
   gap: 16px;
   padding: 12px 18px;
-  border-bottom: 1px solid #d9d7ef;
-  background: #f4f3fd;
+  border-bottom: 1px solid var(--card-border);
+  background: var(--soft-band);
 }
 
 .text-card-path {
-  color: #5f60b4;
+  color: var(--brand-strong);
   font-size: 0.98rem;
   font-weight: 700;
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
@@ -496,8 +599,8 @@ button {
   padding: 0 16px;
   border: 0;
   border-radius: 8px;
-  background: #6660bb;
-  color: #fff;
+  background: var(--brand);
+  color: var(--brand-contrast);
   font-size: 0.84rem;
   font-weight: 700;
   transition:
@@ -507,12 +610,12 @@ button {
 
 .text-copy-btn:hover {
   transform: translateY(-1px);
-  background: #5750ab;
+  background: var(--brand-strong);
 }
 
 .text-card-value {
   padding: 18px;
-  color: #363948;
+  color: var(--code-text);
   font-size: 0.96rem;
   line-height: 1.7;
   white-space: pre-wrap;
@@ -534,7 +637,7 @@ button {
   flex-wrap: wrap;
   padding: 12px 18px;
   border-bottom: 1px solid var(--border);
-  background: rgba(247, 246, 255, 0.96);
+  background: color-mix(in srgb, var(--surface-soft) 96%, transparent);
 }
 
 .markdown-modes {
@@ -550,35 +653,35 @@ button {
   padding: 0 16px; 
   border: 0;
   border-radius: 8px;
-  background: #dfdef1;
-  color: #5f5db3;
+  background: var(--surface-muted);
+  color: var(--brand-strong);
   font-size: 0.74rem;
   font-weight: 700;
 }
 
 .markdown-mode-btn.active,
 .markdown-copy-btn {
-  background: #6660bb;
-  color: #fff;
+  background: var(--brand);
+  color: var(--brand-contrast);
 }
 
 .markdown-mode-divider {
   width: 1px;
   height: 34px;
   margin-inline: 8px;
-  background: #c8c5e8;
+  background: var(--border);
 }
 
 .markdown-render,
 .markdown-source-view {
   min-height: 100%;
   padding: 28px 32px 56px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .markdown-render h1 {
   margin: 0;
-  color: #615fb7;
+  color: var(--brand-strong);
   font-size: 2.05rem;
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -586,7 +689,7 @@ button {
 
 .markdown-render h2 {
   margin: 42px 0 20px;
-  color: #615fb7;
+  color: var(--brand-strong);
   font-size: 1.18rem;
   font-weight: 800;
 }
@@ -603,13 +706,13 @@ button {
   display: block;
   height: 3px;
   margin-top: 18px;
-  background: #e0dfef;
+  background: var(--border);
 }
 
 .markdown-render ul {
   margin: 0;
   padding-left: 26px;
-  color: #3c3c45;
+  color: var(--code-text);
 }
 
 .markdown-render li {
@@ -629,20 +732,20 @@ button {
 }
 
 .markdown-render table thead {
-  background: #f4f3fd;
+  background: var(--soft-band);
 }
 
 .markdown-render table th,
 .markdown-render table td {
   padding: 18px 24px;
-  border: 1px solid #dddaf1;
+  border: 1px solid var(--border);
   text-align: left;
-  color: #3f3f47;
+  color: var(--code-text);
   font-size: 1rem;
 }
 
 .markdown-render table th {
-  color: #615fb7;
+  color: var(--brand-strong);
   font-size: 0.98rem;
   font-weight: 800;
 }
@@ -698,31 +801,31 @@ button {
   display: grid;
   gap: 14px;
   align-content: start;
-  background: linear-gradient(180deg, rgba(251, 250, 255, 0.96), rgba(244, 243, 255, 0.94));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 96%, transparent), color-mix(in srgb, var(--surface-soft) 94%, transparent));
 }
 
 .diff-tip {
   padding: 12px 16px;
-  border: 1px solid #dddaf2;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: linear-gradient(90deg, rgba(245, 244, 255, 0.95), rgba(239, 238, 252, 0.9));
-  color: #6660b8;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--surface-soft) 95%, transparent), color-mix(in srgb, var(--surface-muted) 72%, transparent));
+  color: var(--brand-strong);
   font-size: 0.88rem;
 }
 
 .diff-editor-shell {
   overflow: hidden;
-  border: 1px solid #dbd8f1;
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
 }
 
 .diff-editor-header,
 .diff-column-header {
   padding: 12px 16px;
-  border-bottom: 1px solid #dddaf2;
-  background: #f3f2fd;
-  color: #605ab3;
+  border-bottom: 1px solid var(--border);
+  background: var(--soft-band);
+  color: var(--brand-strong);
   font-size: 0.9rem;
   font-weight: 700;
 }
@@ -735,7 +838,7 @@ button {
   resize: vertical;
   padding: 16px;
   background: transparent;
-  color: #40395d;
+  color: var(--code-text);
   line-height: 1.7;
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
 }
@@ -747,9 +850,9 @@ button {
   gap: 16px;
   flex-wrap: wrap;
   padding: 12px 14px;
-  border: 1px solid #dddaf2;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.92);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
 }
 
 .diff-actions,
@@ -765,8 +868,8 @@ button {
   padding: 0 14px;
   border: 0;
   border-radius: 8px;
-  background: #6660bb;
-  color: #fff;
+  background: var(--brand);
+  color: var(--brand-contrast);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -776,11 +879,11 @@ button {
 }
 
 .diff-btn-copy {
-  background: #21a2b8;
+  background: var(--diff-accent);
 }
 
 .diff-stat {
-  color: #66656f;
+  color: var(--text-soft);
   font-size: 0.92rem;
 }
 
@@ -804,9 +907,9 @@ button {
 
 .diff-column {
   overflow: hidden;
-  border: 1px solid #dbd8f1;
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.96);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
 }
 
 .resize-handle-diff {
@@ -827,7 +930,7 @@ button {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr);
   gap: 0;
-  border-bottom: 1px solid rgba(221, 218, 242, 0.65);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
   font-size: 0.92rem;
 }
@@ -835,14 +938,14 @@ button {
 .diff-line-number {
   padding: 10px 8px;
   text-align: right;
-  color: #8f8aac;
-  background: rgba(245, 244, 255, 0.9);
-  border-right: 1px solid rgba(221, 218, 242, 0.7);
+  color: var(--text-soft);
+  background: color-mix(in srgb, var(--surface-soft) 90%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
 }
 
 .diff-line-code {
   padding: 10px 14px;
-  color: #3f385d;
+  color: var(--code-text);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -877,7 +980,7 @@ button {
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.72);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
   white-space: pre-wrap;
   word-break: break-word;
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
@@ -896,14 +999,14 @@ button {
   min-height: var(--statusbar-height);
   padding: 10px 16px;
   color: var(--brand-strong);
-  background: rgba(243, 242, 255, 0.96);
+  background: color-mix(in srgb, var(--surface-soft) 96%, transparent);
   border-top: 1px solid var(--border);
   font-size: 0.84rem;
 }
 
 .statusbar {
-  background: linear-gradient(90deg, var(--brand-strong), #716abf);
-  color: #fff;
+  background: linear-gradient(90deg, var(--brand-strong), var(--brand-gradient-end));
+  color: var(--brand-contrast);
   font-size: 0.82rem;
 }
 

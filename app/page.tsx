@@ -53,6 +53,7 @@ type DiffLine = {
 type DragTarget = "workspace" | "diff";
 
 type MarkdownMode = "table-render" | "table-source" | "plain-render" | "plain-source";
+type ThemeTone = "blue" | "green" | "violet" | "dark";
 
 const SAMPLE_JSON = `{
   "name": "John",
@@ -66,6 +67,7 @@ const SAMPLE_JSON = `{
 }`;
 
 const HISTORY_KEY = "json-parser-history";
+const THEME_KEY = "json-parser-theme";
 
 const TABS: Array<{ id: ViewTab; label: string }> = [
   { id: "formatted", label: "Formatted" },
@@ -78,6 +80,22 @@ const TABS: Array<{ id: ViewTab; label: string }> = [
   { id: "xml", label: "XML" },
   { id: "markdown", label: "Markdown" },
 ];
+
+const THEMES: Array<{ id: ThemeTone; label: string }> = [
+  { id: "blue", label: "Blue" },
+  { id: "green", label: "Green" },
+  { id: "violet", label: "Violet" },
+  { id: "dark", label: "Dark" },
+];
+
+function readTheme() {
+  if (typeof window === "undefined") {
+    return "blue" as ThemeTone;
+  }
+
+  const saved = window.localStorage.getItem(THEME_KEY);
+  return THEMES.some((theme) => theme.id === saved) ? (saved as ThemeTone) : "blue";
+}
 
 function readHistory() {
   if (typeof window === "undefined") {
@@ -447,16 +465,21 @@ export default function Home() {
   const [markdownMode, setMarkdownMode] = useState<MarkdownMode>("table-render");
   const [workspaceSplit, setWorkspaceSplit] = useState(50);
   const [diffSplit, setDiffSplit] = useState(50);
+  const [theme, setTheme] = useState<ThemeTone>(readTheme);
   const [dragTarget, setDragTarget] = useState<DragTarget | null>(null);
   const [canResizeWorkspace, setCanResizeWorkspace] = useState(false);
   const [canResizeDiff, setCanResizeDiff] = useState(false);
-  const fileInputId = useId();
   const workspaceRef = useRef<HTMLElement | null>(null);
   const diffCompareRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     window.localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   }, [history]);
+
+  useEffect(() => {
+    window.localStorage.setItem(THEME_KEY, theme);
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   useEffect(() => {
     function syncResizeAvailability() {
@@ -597,14 +620,6 @@ export default function Home() {
     }
   }
 
-  function handleAutoFix() {
-    const fixed = autoFixJson(input);
-    setInput(fixed);
-    const nextParsed = parseInput(fixed);
-    setStatusMessage(
-      nextParsed.valid ? "Auto-fix applied" : nextParsed.error || "Unable to fully auto-fix",
-    );
-  }
 
   async function copyText(value: string, message: string) {
     if (!value) {
@@ -711,7 +726,7 @@ export default function Home() {
   }
 
   return (
-    <main className="parser-shell">
+    <main className="parser-shell" data-theme={theme}>
       <div
         aria-hidden={!showHistory}
         className={`history-overlay ${showHistory ? "open" : ""}`}
@@ -750,6 +765,20 @@ export default function Home() {
       <section className="topbar">
         <div className="brand">JSON Parser Online</div>
         <div className="toolbar">
+          <label className="theme-picker">
+            <span className="sr-only">Theme</span>
+            <select
+              aria-label="Change theme"
+              onChange={(event) => setTheme(event.target.value as ThemeTone)}
+              value={theme}
+            >
+              {THEMES.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </label>
           <button
             className="btn btn-muted"
             onClick={() => setStatusMessage("JSON parser with formatter, tree view and converters.")}
@@ -766,9 +795,6 @@ export default function Home() {
           <button className="btn btn-success" onClick={handleValidate} type="button">
             Validate
           </button>
-          <button className="btn btn-muted" onClick={handleAutoFix} type="button">
-            Auto Fix
-          </button>
           <button className="btn btn-muted" onClick={() => copyText(input, "Input copied")} type="button">
             Copy
           </button>
@@ -778,16 +804,7 @@ export default function Home() {
           <button className="btn btn-muted" onClick={handleShare} type="button">
             Share
           </button>
-          <label className="btn btn-muted" htmlFor={fileInputId}>
-            Load
-          </label>
-          <input
-            className="sr-only"
-            id={fileInputId}
-            onChange={handleLoadFile}
-            type="file"
-            accept=".json,.txt,.md,.csv,.xml"
-          />
+          
           <button className="btn btn-danger" onClick={handleClear} type="button">
             Clear
           </button>
@@ -1060,7 +1077,7 @@ export default function Home() {
 
       <footer className="statusbar">
         <span>{status}</span>
-        <span>PlayHouse Co.,Ltd. Copyright © 2026 | apps@playhouse.com</span>
+        <span>ToolHub Co.,Ltd. Copyright © 2026 | toolhub@gmail.com</span>
       </footer>
     </main>
   );
