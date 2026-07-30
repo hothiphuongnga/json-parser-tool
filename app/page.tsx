@@ -141,14 +141,6 @@ function sanitizeInput(input: string) {
     .replace(/[‘’]/g, "'");
 }
 
-function autoFixJson(input: string) {
-  let next = sanitizeInput(input).trim();
-  next = next.replace(/,\s*([}\]])/g, "$1");
-  next = next.replace(/([{,]\s*)([A-Za-z0-9_$]+)\s*:/g, '$1"$2":');
-  next = next.replace(/:\s*'([^']*)'/g, ': "$1"');
-  next = next.replace(/'([^']*)'\s*:/g, '"$1":');
-  return next;
-}
 
 function parseInput(input: string) {
   const cleaned = sanitizeInput(input).trim();
@@ -453,20 +445,18 @@ function TreeNode({ label, value, path, depth = 0, onSelectPath }: TreeNodeProps
 }
 
 export default function Home() {
-  const initialSharedInput = readSharedInput();
-  const [input, setInput] = useState(initialSharedInput);
+  const [input, setInput] = useState("");
   const [compareInput, setCompareInput] = useState("");
   const [activeTab, setActiveTab] = useState<ViewTab>("tree");
-  const [statusMessage, setStatusMessage] = useState(
-    initialSharedInput ? "Loaded shared data" : "",
-  );
+  const [statusMessage, setStatusMessage] = useState("");
   const [selectedPath, setSelectedPath] = useState("$");
-  const [history, setHistory] = useState<HistoryEntry[]>(readHistory);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [markdownMode, setMarkdownMode] = useState<MarkdownMode>("table-render");
   const [workspaceSplit, setWorkspaceSplit] = useState(50);
   const [diffSplit, setDiffSplit] = useState(50);
-  const [theme, setTheme] = useState<ThemeTone>(readTheme);
+  const [theme, setTheme] = useState<ThemeTone>("blue");
+  const [hasHydrated, setHasHydrated] = useState(false);
   const [dragTarget, setDragTarget] = useState<DragTarget | null>(null);
   const [canResizeWorkspace, setCanResizeWorkspace] = useState(false);
   const [canResizeDiff, setCanResizeDiff] = useState(false);
@@ -474,13 +464,38 @@ export default function Home() {
   const diffCompareRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    window.localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-  }, [history]);
+    let active = true;
+
+    queueMicrotask(() => {
+      if (!active) return;
+
+      const sharedInput = readSharedInput();
+      setHistory(readHistory());
+      setTheme(readTheme());
+
+      if (sharedInput) {
+        setInput(sharedInput);
+        setStatusMessage("Loaded shared data");
+      }
+
+      setHasHydrated(true);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
+    if (!hasHydrated) return;
+    window.localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  }, [hasHydrated, history]);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
     window.localStorage.setItem(THEME_KEY, theme);
     document.documentElement.dataset.theme = theme;
-  }, [theme]);
+  }, [hasHydrated, theme]);
 
   useEffect(() => {
     function syncResizeAvailability() {
@@ -650,18 +665,7 @@ export default function Home() {
     setStatusMessage("Cleared");
   }
 
-  function handleLoadFile(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
 
-    file.text().then((text) => {
-      setInput(text);
-      setStatusMessage(`Loaded ${file.name}`);
-      saveToHistory(text);
-    });
-  }
 
   function handleSwapDiff() {
     setInput(compareInput);
@@ -674,30 +678,6 @@ export default function Home() {
     setStatusMessage("Cleared compare JSON");
   }
 
-  async function handleShare() {
-    if (!input.trim()) {
-      setStatusMessage("Nothing to share");
-      return;
-    }
-
-    const shareUrl = `${window.location.origin}${window.location.pathname}#data=${encodeURIComponent(input)}`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "JSON Parser Online",
-          text: "Shared JSON payload",
-          url: shareUrl,
-        });
-        setStatusMessage("Shared successfully");
-        return;
-      } catch {
-        // Fall back to clipboard below.
-      }
-    }
-
-    await copyText(shareUrl, "Share link copied");
-  }
 
   function currentOutput() {
     switch (activeTab) {
@@ -786,13 +766,16 @@ export default function Home() {
           <Link className="btn btn-muted tool-link" href="/lunar-calendar">
             Lịch âm
           </Link>
-          <button
+          <Link className="btn btn-muted tool-link" href="/dem-ngay">
+            Đếm ngày
+          </Link>
+          {/* <button
             className="btn btn-muted"
             onClick={() => setStatusMessage("JSON parser with formatter, tree view and converters.")}
             type="button"
           >
             About
-          </button>
+          </button> */}
           <button className="btn btn-primary" onClick={handlePretty} type="button">
             Format (Pretty)
           </button>
@@ -808,9 +791,9 @@ export default function Home() {
           <button className="btn btn-muted" onClick={handleSample} type="button">
             Sample
           </button>
-          <button className="btn btn-muted" onClick={handleShare} type="button">
+          {/* <button className="btn btn-muted" onClick={handleShare} type="button">
             Share
-          </button>
+          </button> */}
           
           <button className="btn btn-danger" onClick={handleClear} type="button">
             Clear
@@ -1084,7 +1067,7 @@ export default function Home() {
 
       <footer className="statusbar">
         <span>{status}</span>
-        <span>ToolHub Co.,Ltd. Copyright © 2026 | toolhub@gmail.com</span>
+        <span>Tools.hothiphuongnga Co.,Ltd. Copyright © 2026 | @gmail.com</span>
       </footer>
     </main>
   );

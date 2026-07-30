@@ -42,7 +42,7 @@ const LANGUAGES: Array<{ id: TargetLanguage; label: string }> = [
 
 const SAMPLE_JSON = `{
   "id": 1024,
-  "name": "ToolHub",
+  "name": "Tools",
   "active": true,
   "tags": ["json", "type", "converter"],
   "owner": {
@@ -529,6 +529,9 @@ export default function JsonToTypePage() {
           <Link className="btn btn-muted tool-link" href="/lunar-calendar">
             Lịch âm
           </Link>
+          <Link className="btn btn-muted tool-link" href="/dem-ngay">
+            Đếm ngày
+          </Link>
           <button className="btn btn-primary" onClick={formatInput} type="button">
             Format JSON
           </button>
@@ -665,7 +668,7 @@ export default function JsonToTypePage() {
 
       <footer className="statusbar">
         <span>{status}</span>
-        <span>ToolHub Co.,Ltd. Copyright © 2026 | toolhub@gmail.com</span>
+        <span>Tools.hothiphuongnga Co.,Ltd. Copyright © 2026 | </span>
       </footer>
     </main>
   );

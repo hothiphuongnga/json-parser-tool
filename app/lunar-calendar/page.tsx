@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { DayPicker } from "react-day-picker";
+import { vi } from "react-day-picker/locale";
+import "react-day-picker/style.css";
 import "./lunar-calendar.css";
 
 type LunarDate = {
@@ -282,10 +285,6 @@ function formatSolarParts(day: number, month: number, year: number) {
   return `${day.toString().padStart(2, "0")}/${month.toString().padStart(2, "0")}/${year}`;
 }
 
-function toDateInputValue(date: Date) {
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-}
-
 function parseDateInput(value: string) {
   const normalized = value.trim();
   const parts = normalized.includes("-")
@@ -386,7 +385,7 @@ function moonPhase(lunarDay: number) {
 
 export default function LunarCalendarPage() {
   const today = useMemo(() => new Date(), []);
-  const solarInputRef = useRef<HTMLInputElement | null>(null);
+  const solarPickerRef = useRef<HTMLDivElement | null>(null);
   const todayLunar = useMemo(
     () => convertSolarToLunar(today.getDate(), today.getMonth() + 1, today.getFullYear()),
     [today],
@@ -394,6 +393,7 @@ export default function LunarCalendarPage() {
   const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selectedDate, setSelectedDate] = useState(today);
   const [solarLookup, setSolarLookup] = useState(formatSolarDate(today));
+  const [solarPickerOpen, setSolarPickerOpen] = useState(false);
   const [lunarLookup, setLunarLookup] = useState<LunarLookup>({
     day: String(todayLunar.day),
     month: String(todayLunar.month),
@@ -411,10 +411,7 @@ export default function LunarCalendarPage() {
 
     return convertSolarToLunar(date.getDate(), date.getMonth() + 1, date.getFullYear());
   }, [solarLookup]);
-  const solarPickerValue = useMemo(() => {
-    const date = parseDateInput(solarLookup);
-    return date ? toDateInputValue(date) : "";
-  }, [solarLookup]);
+  const solarPickerDate = useMemo(() => parseDateInput(solarLookup) ?? selectedDate, [selectedDate, solarLookup]);
   const lunarLookupResult = useMemo(() => {
     const day = parseLookupNumber(lunarLookup.day);
     const month = parseLookupNumber(lunarLookup.month);
@@ -426,6 +423,24 @@ export default function LunarCalendarPage() {
 
     return convertLunarToSolar({ day, month, year, leap: lunarLookup.leap });
   }, [lunarLookup]);
+
+  useEffect(() => {
+    if (!solarPickerOpen) return;
+
+    const closePicker = (event: PointerEvent) => {
+      if (!solarPickerRef.current?.contains(event.target as Node)) setSolarPickerOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSolarPickerOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closePicker);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closePicker);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [solarPickerOpen]);
 
   function moveMonth(step: number) {
     setViewDate((current) => new Date(current.getFullYear(), current.getMonth() + step, 1));
@@ -463,34 +478,16 @@ export default function LunarCalendarPage() {
     setViewDate(new Date(date.getFullYear(), date.getMonth(), 1));
   }
 
-  function openSolarPicker() {
-    const input = solarInputRef.current;
-    if (!input) {
-      return;
-    }
-
-    input.focus();
-    input.showPicker?.();
-  }
-
-  function handleSolarPickerChange(value: string) {
-    const date = parseDateInput(value);
-    if (!date) {
-      return;
-    }
-
-    handleSolarLookupChange(formatSolarDate(date));
-  }
-
   return (
     <main className="lunar-shell">
       <header className="lunar-topbar">
         <Link className="lunar-brand" href="/">
-          ToolHub Calendar
+          Tools Calendar
         </Link>
         <nav className="lunar-nav" aria-label="Tools">
           <Link href="/">JSON Parser</Link>
           <Link href="/json-to-type">JSON to Type</Link>
+          <Link href="/dem-ngay">Đếm ngày</Link>
         </nav>
       </header>
 
@@ -505,27 +502,64 @@ export default function LunarCalendarPage() {
             <span>Đổi dương sang âm</span>
             <label>
               Ngày dương
-              <span className="date-picker-shell">
+              <div className="date-picker-shell" ref={solarPickerRef}>
                 <input
-                  onFocus={(event) => event.target.select()}
+                  onFocus={(event) => {
+                    event.target.select();
+                    setSolarPickerOpen(true);
+                  }}
                   onChange={(event) => handleSolarLookupChange(event.target.value)}
                   placeholder="dd/mm/yyyy"
                   type="text"
                   value={solarLookup}
                 />
-                <input
-                  aria-hidden="true"
-                  className="native-date-input"
-                  onChange={(event) => handleSolarPickerChange(event.target.value)}
-                  ref={solarInputRef}
-                  tabIndex={-1}
-                  type="date"
-                  value={solarPickerValue}
-                />
-                <button aria-label="Mở chọn ngày dương" onClick={openSolarPicker} type="button">
-                  <span aria-hidden="true">▦</span>
+                <button
+                  aria-expanded={solarPickerOpen}
+                  aria-haspopup="dialog"
+                  aria-label="Mở chọn ngày dương"
+                  onClick={() => setSolarPickerOpen((current) => !current)}
+                  type="button"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 3v3m10-3v3M4.5 9.5h15M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
+                  </svg>
                 </button>
-              </span>
+                {solarPickerOpen && (
+                  <div className="lunar-date-popover" role="dialog" aria-label="Chọn ngày dương">
+                    <DayPicker
+                      animate
+                      captionLayout="dropdown"
+                      endMonth={new Date(2100, 11)}
+                      fixedWeeks
+                      locale={vi}
+                      mode="single"
+                      onSelect={(date) => {
+                        if (!date) return;
+                        pickDate(date);
+                        setViewDate(new Date(date.getFullYear(), date.getMonth(), 1));
+                        setSolarPickerOpen(false);
+                      }}
+                      selected={solarPickerDate}
+                      showOutsideDays
+                      startMonth={new Date(1900, 0)}
+                    />
+                    <div className="lunar-picker-footer">
+                      <button type="button" onClick={() => setSolarPickerOpen(false)}>
+                        Đóng
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          jumpToday();
+                          setSolarPickerOpen(false);
+                        }}
+                      >
+                        Hôm nay
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </label>
             <strong>
               {solarLookupResult

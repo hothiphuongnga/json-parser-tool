@@ -230,7 +230,7 @@
 
 .converter-card {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   gap: 7px;
   min-height: 100%;
   border-color: rgba(216, 224, 234, 0.88);
@@ -242,6 +242,10 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
     0 8px 18px rgba(31, 41, 55, 0.08);
   backdrop-filter: blur(10px);
+}
+
+.converter-card:has(.lunar-date-popover) {
+  z-index: 20;
 }
 
 .converter-card::after {
@@ -285,6 +289,7 @@
 }
 
 .date-picker-shell {
+  position: relative;
   min-height: 30px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 30px;
@@ -344,7 +349,7 @@
   pointer-events: none;
 }
 
-.date-picker-shell button {
+.date-picker-shell > button {
   width: 26px;
   height: 26px;
   display: grid;
@@ -358,6 +363,156 @@
   font-weight: 900;
   cursor: pointer;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.date-picker-shell > button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lunar-date-popover {
+  --rdp-accent-color: var(--calendar-accent);
+  --rdp-accent-background-color: rgba(99, 102, 241, 0.12);
+  --rdp-day-height: 38px;
+  --rdp-day-width: 38px;
+  --rdp-nav_button-height: 34px;
+  --rdp-nav_button-width: 34px;
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 8px);
+  left: 0;
+  width: max-content;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(239, 243, 255, 0.82)),
+    radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.96), transparent 45%);
+  box-shadow:
+    0 30px 70px rgba(37, 48, 100, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96);
+  color: var(--calendar-text);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  backdrop-filter: blur(30px) saturate(160%);
+  animation: lunar-picker-enter 170ms ease-out;
+}
+
+.lunar-date-popover .rdp-root {
+  margin: 0;
+}
+
+.lunar-date-popover .rdp-month_caption {
+  height: 42px;
+}
+
+.lunar-date-popover .rdp-dropdowns {
+  gap: 6px;
+}
+
+.lunar-date-popover .rdp-dropdown_root {
+  border: 1px solid rgba(99, 102, 241, 0.13);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.lunar-date-popover .rdp-caption_label {
+  padding: 0 9px;
+  color: #263450;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.lunar-date-popover .rdp-button_previous,
+.lunar-date-popover .rdp-button_next {
+  border: 1px solid rgba(99, 102, 241, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--calendar-accent);
+}
+
+.lunar-date-popover .rdp-weekday {
+  color: #7b849a;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.lunar-date-popover .rdp-day_button {
+  width: var(--rdp-day-width);
+  height: var(--rdp-day-height);
+  border-radius: 11px;
+  color: #27334e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: background-color 130ms ease, color 130ms ease, transform 130ms ease;
+}
+
+.lunar-date-popover .rdp-day_button:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--calendar-accent-strong);
+  transform: translateY(-1px);
+}
+
+.lunar-date-popover .rdp-selected .rdp-day_button {
+  border-color: transparent;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: #fff;
+  box-shadow:
+    0 8px 18px rgba(79, 70, 229, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.lunar-date-popover .rdp-today:not(.rdp-selected) .rdp-day_button {
+  border: 1px solid rgba(99, 102, 241, 0.38);
+  color: var(--calendar-accent-strong);
+}
+
+.lunar-date-popover .rdp-outside {
+  opacity: 0.3;
+}
+
+.lunar-picker-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 7px;
+  padding: 10px 4px 2px;
+  border-top: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.lunar-picker-footer button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.09);
+  color: var(--calendar-accent-strong);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.lunar-picker-footer button:last-child {
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: #fff;
+  box-shadow: 0 7px 16px rgba(79, 70, 229, 0.2);
+}
+
+@keyframes lunar-picker-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .converter-card strong {
@@ -604,5 +759,157 @@
 
   .lunar-input-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Modern glass layer */
+.lunar-shell {
+  --calendar-bg: #edf3ff;
+  --calendar-surface: rgba(255, 255, 255, 0.58);
+  --calendar-surface-soft: rgba(245, 248, 255, 0.5);
+  --calendar-border: rgba(255, 255, 255, 0.72);
+  --calendar-text: #17233d;
+  --calendar-muted: #6b7894;
+  --calendar-accent: #6366f1;
+  --calendar-accent-strong: #4338ca;
+  --calendar-accent-soft: rgba(224, 231, 255, 0.7);
+  --calendar-shadow: rgba(51, 65, 128, 0.14);
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 10% 8%, rgba(99, 102, 241, 0.22), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.2), transparent 27%),
+    radial-gradient(circle at 55% 100%, rgba(236, 72, 153, 0.12), transparent 30%),
+    linear-gradient(145deg, #f8faff, #e8f0fc);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.lunar-topbar {
+  width: min(1080px, calc(100vw - 28px));
+  margin: 12px auto;
+  padding: 10px 14px;
+  border: 1px solid var(--calendar-border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 14px 36px var(--calendar-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(22px) saturate(150%);
+}
+
+.lunar-brand {
+  font-size: 1rem;
+  letter-spacing: -0.025em;
+}
+
+.lunar-nav a {
+  min-height: 32px;
+  padding-inline: 13px;
+  border-color: var(--calendar-border);
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.lunar-nav a:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.lookup-stage,
+.lunar-detail,
+.calendar-board {
+  border-color: var(--calendar-border);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.26)),
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.8), transparent 40%);
+  box-shadow:
+    0 24px 70px var(--calendar-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(26px) saturate(155%);
+}
+
+.lookup-stage {
+  padding: 14px;
+  border-radius: 24px;
+}
+
+.lunar-detail,
+.calendar-board {
+  border-radius: 20px;
+}
+
+.moon-card {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(99, 102, 241, 0.44), transparent 40%),
+    linear-gradient(145deg, rgba(23, 35, 61, 0.96), rgba(48, 46, 115, 0.9));
+  box-shadow:
+    0 18px 40px rgba(30, 41, 88, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.lunar-note-grid article,
+.converter-card {
+  border-color: var(--calendar-border);
+  background: rgba(255, 255, 255, 0.38);
+  box-shadow:
+    0 10px 28px rgba(51, 65, 128, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+}
+
+.converter-card input,
+.date-picker-shell {
+  border-color: var(--calendar-border);
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.calendar-actions button
+/* .date-picker-shell button  */
+{
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  box-shadow:
+    0 8px 20px rgba(79, 70, 229, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.calendar-actions button:nth-child(2) {
+  background: rgba(255, 255, 255, 0.54);
+}
+
+.calendar-cell {
+  border-color: rgba(255, 255, 255, 0.72);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.38);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(10px);
+}
+
+.calendar-cell:hover {
+  border-color: rgba(99, 102, 241, 0.38);
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    0 12px 24px rgba(79, 70, 229, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.calendar-cell.today {
+  border-color: rgba(99, 102, 241, 0.7);
+}
+
+.calendar-cell.selected {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: linear-gradient(145deg, #6366f1, #3b82f6);
+  box-shadow:
+    0 14px 30px rgba(79, 70, 229, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendar-cell,
+  .lunar-nav a {
+    transition: none;
   }
 }

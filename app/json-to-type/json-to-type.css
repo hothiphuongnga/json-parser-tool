@@ -137,3 +137,55 @@
     flex: 1;
   }
 }
+
+/* Keep the converter aligned with the shared glass workspace. */
+.type-tool-workspace {
+  grid-template-columns: minmax(320px, 0.88fr) 8px minmax(360px, 1.12fr);
+  gap: 10px;
+  padding: calc(var(--topbar-height) + 16px) 14px calc(var(--statusbar-height) + 12px);
+}
+
+.type-resize-handle {
+  height: calc(100vh - var(--topbar-height) - var(--statusbar-height) - 28px);
+  max-height: calc(100vh - var(--topbar-height) - var(--statusbar-height) - 28px);
+}
+
+.type-controls {
+  background: var(--panel-bar-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.type-mode {
+  border-color: var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
+  box-shadow:
+    0 8px 20px color-mix(in srgb, var(--brand-strong) 8%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.54);
+}
+
+.type-mode-btn {
+  border-radius: 9px;
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.type-mode-btn:hover {
+  transform: translateY(-1px);
+}
+
+.type-mode-btn.active {
+  background: linear-gradient(135deg, var(--brand), var(--brand-gradient-end));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand) 22%, transparent);
+}
+
+@media (max-width: 1100px) {
+  .type-tool-workspace {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .type-input-panel {
+    border-bottom: 1px solid var(--border);
+  }
+}
