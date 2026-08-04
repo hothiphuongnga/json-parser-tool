@@ -763,11 +763,17 @@ export default function Home() {
           <Link className="btn btn-muted tool-link" href="/json-to-type">
             JSON to Type
           </Link>
+          <Link className="btn btn-muted tool-link" href="/html-online">
+            HTML Online
+          </Link>
           <Link className="btn btn-muted tool-link" href="/lunar-calendar">
             Lịch âm
           </Link>
           <Link className="btn btn-muted tool-link" href="/dem-ngay">
             Đếm ngày
+          </Link>
+          <Link className="btn btn-muted tool-link" href="/compare">
+            Compare
           </Link>
           {/* <button
             className="btn btn-muted"

@@ -235,7 +235,10 @@ export default function DayCounterPage() {
           <Link href="/" className="day-counter-back">
             JSON Tool
           </Link>
-          <span>Đếm ngày</span>
+          <div className="day-counter-nav-links">
+            <Link href="/compare">Compare</Link>
+            <span>Đếm ngày</span>
+          </div>
         </div>
 
         <div className="day-counter-grid">

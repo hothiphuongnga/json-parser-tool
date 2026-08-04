@@ -488,6 +488,7 @@ export default function LunarCalendarPage() {
           <Link href="/">JSON Parser</Link>
           <Link href="/json-to-type">JSON to Type</Link>
           <Link href="/dem-ngay">Đếm ngày</Link>
+          <Link href="/compare">Compare</Link>
         </nav>
       </header>
 

@@ -1,0 +1,116 @@
+.html-shell {
+  min-height: 100vh;
+  color: var(--foreground);
+}
+
+.html-workspace {
+  height: 100vh;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+  gap: 12px;
+  padding: calc(var(--topbar-height) + 16px) 14px calc(var(--statusbar-height) + 12px);
+}
+
+.html-panel {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--surface-soft) 78%, transparent));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px) saturate(145%);
+}
+
+.html-panel-header {
+  min-height: var(--panel-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-bar-bg);
+  color: var(--brand-strong);
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.html-panel-header > span:last-child {
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
+.html-editor {
+  width: 100%;
+  min-height: 0;
+  resize: none;
+  border: 0;
+  outline: 0;
+  padding: 18px;
+  background: transparent;
+  color: var(--code-text);
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  font-size: .88rem;
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+.html-preview-panel {
+  background: #fff;
+}
+
+.html-preview {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  background: #fff;
+}
+
+.html-auto-run {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-soft);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.html-auto-run input {
+  accent-color: var(--brand);
+}
+
+@media (max-width: 1100px) {
+  body { overflow: auto; }
+
+  .html-shell { padding-top: 0; }
+
+  .html-topbar {
+    position: relative;
+    inset: 0;
+    border-radius: 0 0 18px 18px;
+  }
+
+  .html-workspace {
+    height: auto;
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+
+  .html-panel { min-height: 520px; }
+
+  .html-statusbar {
+    position: relative;
+    inset: auto;
+    margin: 0 12px 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .html-panel { min-height: 420px; }
+  .html-statusbar span:last-child { display: none; }
+}

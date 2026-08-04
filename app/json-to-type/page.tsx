@@ -532,6 +532,9 @@ export default function JsonToTypePage() {
           <Link className="btn btn-muted tool-link" href="/dem-ngay">
             Đếm ngày
           </Link>
+          <Link className="btn btn-muted tool-link" href="/compare">
+            Compare
+          </Link>
           <button className="btn btn-primary" onClick={formatInput} type="button">
             Format JSON
           </button>
