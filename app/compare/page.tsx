@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import AdSenseSlot from "../components/AdSenseSlot";
 import { useMemo, useState } from "react";
 import "./compare.css";
 
@@ -150,6 +151,8 @@ export default function ComparePage() {
           <Link href="/lunar-calendar">Lịch âm</Link>
         </nav>
       </header>
+
+      <AdSenseSlot placement="compare-top" />
 
       <section className="compare-heading">
         <div>

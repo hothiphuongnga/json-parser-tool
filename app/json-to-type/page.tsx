@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import AdSenseSlot from "../components/AdSenseSlot";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./json-to-type.css";
 
@@ -564,6 +565,8 @@ export default function JsonToTypePage() {
         </div>
       </section>
 
+      <AdSenseSlot placement="json-to-type-top" />
+
       <section
         className={`type-tool-workspace ${isResizing ? "is-resizing" : ""}`}
         ref={workspaceRef}
@@ -671,7 +674,7 @@ export default function JsonToTypePage() {
 
       <footer className="statusbar">
         <span>{status}</span>
-        <span>Tools.hothiphuongnga Co.,Ltd. Copyright © 2026 | </span>
+        <span>goingtool.com Co.,Ltd. Copyright © 2026 | </span>
       </footer>
     </main>
   );

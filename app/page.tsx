@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import AdSenseSlot from "./components/AdSenseSlot";
 
 type ParsedValue =
   | string
@@ -54,8 +55,6 @@ type DiffLine = {
 type DragTarget = "workspace" | "diff";
 
 type MarkdownMode = "table-render" | "table-source" | "plain-render" | "plain-source";
-type ThemeTone = "blue" | "green" | "violet" | "dark";
-
 const SAMPLE_JSON = `{
   "name": "John",
   "age": 30,
@@ -68,7 +67,8 @@ const SAMPLE_JSON = `{
 }`;
 
 const HISTORY_KEY = "json-parser-history";
-const THEME_KEY = "json-parser-theme";
+const ACCENT_KEY = "json-parser-accent";
+const DEFAULT_ACCENT = "#2563eb";
 
 const TABS: Array<{ id: ViewTab; label: string }> = [
   { id: "formatted", label: "Formatted" },
@@ -82,20 +82,13 @@ const TABS: Array<{ id: ViewTab; label: string }> = [
   { id: "markdown", label: "Markdown" },
 ];
 
-const THEMES: Array<{ id: ThemeTone; label: string }> = [
-  { id: "blue", label: "Blue" },
-  { id: "green", label: "Green" },
-  { id: "violet", label: "Violet" },
-  { id: "dark", label: "Dark" },
-];
-
-function readTheme() {
+function readAccent() {
   if (typeof window === "undefined") {
-    return "blue" as ThemeTone;
+    return DEFAULT_ACCENT;
   }
 
-  const saved = window.localStorage.getItem(THEME_KEY);
-  return THEMES.some((theme) => theme.id === saved) ? (saved as ThemeTone) : "blue";
+  const saved = window.localStorage.getItem(ACCENT_KEY);
+  return saved && /^#[0-9a-f]{6}$/i.test(saved) ? saved : DEFAULT_ACCENT;
 }
 
 function readHistory() {
@@ -455,7 +448,7 @@ export default function Home() {
   const [markdownMode, setMarkdownMode] = useState<MarkdownMode>("table-render");
   const [workspaceSplit, setWorkspaceSplit] = useState(50);
   const [diffSplit, setDiffSplit] = useState(50);
-  const [theme, setTheme] = useState<ThemeTone>("blue");
+  const [accent, setAccent] = useState(DEFAULT_ACCENT);
   const [hasHydrated, setHasHydrated] = useState(false);
   const [dragTarget, setDragTarget] = useState<DragTarget | null>(null);
   const [canResizeWorkspace, setCanResizeWorkspace] = useState(false);
@@ -471,7 +464,7 @@ export default function Home() {
 
       const sharedInput = readSharedInput();
       setHistory(readHistory());
-      setTheme(readTheme());
+      setAccent(readAccent());
 
       if (sharedInput) {
         setInput(sharedInput);
@@ -493,9 +486,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!hasHydrated) return;
-    window.localStorage.setItem(THEME_KEY, theme);
-    document.documentElement.dataset.theme = theme;
-  }, [hasHydrated, theme]);
+    window.localStorage.setItem(ACCENT_KEY, accent);
+  }, [accent, hasHydrated]);
 
   useEffect(() => {
     function syncResizeAvailability() {
@@ -706,8 +698,18 @@ export default function Home() {
     }
   }
 
+  const accentStyle = {
+    "--brand": accent,
+    "--brand-strong": `color-mix(in srgb, ${accent} 76%, #111827)`,
+    "--brand-soft": `color-mix(in srgb, ${accent} 42%, #ffffff)`,
+    "--surface-muted": `color-mix(in srgb, ${accent} 8%, #f8fafc)`,
+    "--border": `color-mix(in srgb, ${accent} 18%, #d8dee8)`,
+    "--card-border": `color-mix(in srgb, ${accent} 18%, #d8dee8)`,
+    "--soft-band": `color-mix(in srgb, ${accent} 7%, #ffffff)`,
+  } as CSSProperties;
+
   return (
-    <main className="parser-shell" data-theme={theme}>
+    <main className="parser-shell" style={accentStyle}>
       <div
         aria-hidden={!showHistory}
         className={`history-overlay ${showHistory ? "open" : ""}`}
@@ -746,19 +748,15 @@ export default function Home() {
       <section className="topbar">
         <div className="brand">JSON Parser Online</div>
         <div className="toolbar">
-          <label className="theme-picker">
-            <span className="sr-only">Theme</span>
-            <select
-              aria-label="Change theme"
-              onChange={(event) => setTheme(event.target.value as ThemeTone)}
-              value={theme}
-            >
-              {THEMES.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
+          <label className="theme-picker" title="Choose accent color">
+            <span>Accent</span>
+            <input
+              aria-label="Choose accent color"
+              onChange={(event) => setAccent(event.target.value)}
+              type="color"
+              value={accent}
+            />
+            <span className="theme-value">{accent.toUpperCase()}</span>
           </label>
           <Link className="btn btn-muted tool-link" href="/json-to-type">
             JSON to Type
@@ -809,6 +807,8 @@ export default function Home() {
           </button>
         </div>
       </section>
+
+      <AdSenseSlot placement="json-parser-top" />
 
       <section
         className={`workspace ${dragTarget === "workspace" ? "is-resizing" : ""}`}
@@ -1073,7 +1073,7 @@ export default function Home() {
 
       <footer className="statusbar">
         <span>{status}</span>
-        <span>Tools.hothiphuongnga Co.,Ltd. Copyright © 2026 | @gmail.com</span>
+        <span>goingtool.com Co.,Ltd. Copyright © 2026 | @gmail.com</span>
       </footer>
     </main>
   );

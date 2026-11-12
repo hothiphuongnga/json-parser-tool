@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import AdSenseSlot from "../components/AdSenseSlot";
 import { useEffect, useMemo, useState } from "react";
 import "./html-online.css";
 
@@ -165,6 +166,8 @@ export default function HtmlOnlinePage() {
         </div>
       </header>
 
+      <AdSenseSlot placement="html-online-top" />
+
       <section className="html-workspace">
         <section className="html-panel">
           <div className="html-panel-header">
@@ -200,7 +203,7 @@ export default function HtmlOnlinePage() {
 
       <footer className="statusbar html-statusbar">
         <span>{status}</span>
-        <span>Preview chạy trong iframe sandbox · Tools.hothiphuongnga Co.,Ltd. © 2026</span>
+        <span>Preview chạy trong iframe sandbox · goingtool.com Co.,Ltd. © 2026</span>
       </footer>
     </main>
   );
