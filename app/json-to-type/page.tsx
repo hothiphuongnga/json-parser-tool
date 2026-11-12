@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import GoogleAd from "../components/GoogleAd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./json-to-type.css";
 
@@ -563,6 +564,8 @@ export default function JsonToTypePage() {
           </button>
         </div>
       </section>
+
+      <GoogleAd />
 
       <section
         className={`type-tool-workspace ${isResizing ? "is-resizing" : ""}`}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import GoogleAd from "../components/GoogleAd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { vi } from "react-day-picker/locale";
@@ -353,6 +354,8 @@ export default function DayCounterPage() {
           </form>
         </div>
       </section>
+
+      <GoogleAd />
 
       <section className="result-band" aria-live="polite">
         <div className="result-main">

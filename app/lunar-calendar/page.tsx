@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import GoogleAd from "../components/GoogleAd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { vi } from "react-day-picker/locale";
@@ -491,6 +492,8 @@ export default function LunarCalendarPage() {
           <Link href="/compare">Compare</Link>
         </nav>
       </header>
+
+      <GoogleAd />
 
       <section className="lookup-stage" aria-label="Chuyển đổi lịch âm dương">
         <div className="lookup-heading">

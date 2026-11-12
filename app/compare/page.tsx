@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import GoogleAd from "../components/GoogleAd";
 import { useMemo, useState } from "react";
 import "./compare.css";
 
@@ -150,6 +151,8 @@ export default function ComparePage() {
           <Link href="/lunar-calendar">Lịch âm</Link>
         </nav>
       </header>
+
+      <GoogleAd />
 
       <section className="compare-heading">
         <div>

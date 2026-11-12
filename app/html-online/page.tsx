@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import GoogleAd from "../components/GoogleAd";
 import { useEffect, useMemo, useState } from "react";
 import "./html-online.css";
 
@@ -164,6 +165,8 @@ export default function HtmlOnlinePage() {
           <button className="btn btn-danger" onClick={() => { setSource(""); setPreview(""); setStatus("Đã xóa nội dung"); }} type="button">Clear</button>
         </div>
       </header>
+
+      <GoogleAd />
 
       <section className="html-workspace">
         <section className="html-panel">

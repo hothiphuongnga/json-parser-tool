@@ -24,7 +24,7 @@ export default function RootLayout({
         id="google-adsense"
         async
         crossOrigin="anonymous"
-        strategy="afterInteractive"
+        strategy="beforeInteractive"
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? "ca-pub-1061165377901019"}`}
       />
     </html>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import GoogleAd from "./components/GoogleAd";
 
 type ParsedValue =
   | string
@@ -806,6 +807,8 @@ export default function Home() {
           </button>
         </div>
       </section>
+
+      <GoogleAd />
 
       <section
         className={`workspace ${dragTarget === "workspace" ? "is-resizing" : ""}`}
