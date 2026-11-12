@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import AdSenseSlot from "../components/AdSenseSlot";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { vi } from "react-day-picker/locale";
@@ -492,8 +491,6 @@ export default function LunarCalendarPage() {
           <Link href="/compare">Compare</Link>
         </nav>
       </header>
-
-      <AdSenseSlot placement="lunar-calendar-top" />
 
       <section className="lookup-stage" aria-label="Chuyển đổi lịch âm dương">
         <div className="lookup-heading">

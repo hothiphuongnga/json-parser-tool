@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import AdSenseSlot from "../components/AdSenseSlot";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { vi } from "react-day-picker/locale";
@@ -354,8 +353,6 @@ export default function DayCounterPage() {
           </form>
         </div>
       </section>
-
-      <AdSenseSlot placement="day-counter-middle" />
 
       <section className="result-band" aria-live="polite">
         <div className="result-main">

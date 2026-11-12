@@ -4,7 +4,6 @@ import Link from "next/link";
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import AdSenseSlot from "./components/AdSenseSlot";
 
 type ParsedValue =
   | string
@@ -807,8 +806,6 @@ export default function Home() {
           </button>
         </div>
       </section>
-
-      <AdSenseSlot placement="json-parser-top" />
 
       <section
         className={`workspace ${dragTarget === "workspace" ? "is-resizing" : ""}`}

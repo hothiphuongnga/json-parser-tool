@@ -153,47 +153,6 @@ a {
   border: 0;
 }
 
-.adsense-slot {
-  width: min(1100px, 100%);
-  min-height: 90px;
-  margin: 0 auto;
-  padding: 8px 16px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  overflow: hidden;
-}
-
-.adsense-slot .adsbygoogle {
-  width: 100%;
-  min-height: 74px;
-}
-
-.adsense-placeholder {
-  width: 100%;
-  min-height: 74px;
-  display: grid;
-  place-items: center;
-  color: var(--text-soft);
-  border: 1px dashed var(--border);
-  border-radius: 8px;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-@media (max-width: 640px) {
-  .adsense-slot {
-    min-height: 58px;
-    padding: 4px 10px;
-  }
-
-  .adsense-slot .adsbygoogle,
-  .adsense-placeholder {
-    min-height: 50px;
-  }
-}
-
 .parser-shell {
   height: 100vh;
   display: flex;

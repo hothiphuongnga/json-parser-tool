@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import AdSenseSlot from "../components/AdSenseSlot";
 import { useEffect, useMemo, useState } from "react";
 import "./html-online.css";
 
@@ -165,8 +164,6 @@ export default function HtmlOnlinePage() {
           <button className="btn btn-danger" onClick={() => { setSource(""); setPreview(""); setStatus("Đã xóa nội dung"); }} type="button">Clear</button>
         </div>
       </header>
-
-      <AdSenseSlot placement="html-online-top" />
 
       <section className="html-workspace">
         <section className="html-panel">

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import AdSenseSlot from "../components/AdSenseSlot";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./json-to-type.css";
 
@@ -564,8 +563,6 @@ export default function JsonToTypePage() {
           </button>
         </div>
       </section>
-
-      <AdSenseSlot placement="json-to-type-top" />
 
       <section
         className={`type-tool-workspace ${isResizing ? "is-resizing" : ""}`}
