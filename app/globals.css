@@ -2267,12 +2267,15 @@ textarea:focus-visible {
 }
 
 :root[data-layout="wide"] .parser-shell,
-:root[data-layout="wide"] .html-shell {
+:root[data-layout="wide"] .html-shell,
+:root[data-layout="wide"] .page-shell {
   --container: 100%;
   --page-inline: var(--gutter);
 }
 
 /* Smoothly widen / narrow when switching. */
+.page-shell > .topbar,
+.page-shell > .page-content,
 .parser-shell > .topbar,
 .parser-shell > .workspace,
 .parser-shell > .type-tool-workspace,
@@ -2621,4 +2624,9 @@ textarea:focus-visible {
     row-gap: 2px;
     padding-block: 8px;
   }
+}
+
+/* Scrolling pages widen through max-width rather than padding. */
+.page-shell > .page-content {
+  transition: max-width 320ms cubic-bezier(0.4, 0, 0.2, 1);
 }

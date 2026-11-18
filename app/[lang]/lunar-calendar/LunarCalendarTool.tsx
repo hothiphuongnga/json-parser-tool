@@ -689,7 +689,7 @@ function LunarShell({ children }: { children: React.ReactNode }) {
   const { t } = useI18n();
   return (
     <main className="page-shell lunar-shell">
-      <SiteHeader tool="lunarCalendar" />
+      <SiteHeader tool="lunarCalendar" workspace />
       <GoogleAd />
       <div className="page-content">
         {children}

@@ -31,7 +31,7 @@ export default function CompareTool() {
 
   return (
     <main className="page-shell compare-shell">
-      <SiteHeader tool="compare" />
+      <SiteHeader tool="compare" workspace />
 
       <GoogleAd />
 

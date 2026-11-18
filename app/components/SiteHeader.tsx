@@ -10,7 +10,7 @@ import { SITE_NAME, type ToolKey } from "@/lib/site";
 
 type SiteHeaderProps = {
   tool: ToolKey;
-  /** Editor-style pages get the focus / full-width switch for their workspace. */
+  /** Shows the focus / full-width switch (every tool page; not the 404 page). */
   workspace?: boolean;
 };
 

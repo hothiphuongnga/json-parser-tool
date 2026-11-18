@@ -384,7 +384,7 @@ function DayCounterShell({ children }: { children: React.ReactNode }) {
   const { t } = useI18n();
   return (
     <main className="page-shell day-counter-shell">
-      <SiteHeader tool="dayCounter" />
+      <SiteHeader tool="dayCounter" workspace />
       <GoogleAd />
       <div className="page-content">
         {children}
