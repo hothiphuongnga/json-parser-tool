@@ -1,0 +1,266 @@
+/* So sánh văn bản — built on the shared tokens in globals.css. */
+
+.compare-shell {
+  --tint-added: color-mix(in srgb, var(--success) 14%, var(--mix-base));
+  --tint-removed: color-mix(in srgb, var(--danger) 12%, var(--mix-base));
+  --tint-modified: color-mix(in srgb, var(--warning) 16%, var(--mix-base));
+}
+
+.compare-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.compare-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.compare-stats span {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.compare-stats .stat-added {
+  border-color: color-mix(in srgb, var(--success) 40%, var(--border));
+  background: var(--tint-added);
+}
+
+.compare-stats .stat-removed {
+  border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+  background: var(--tint-removed);
+}
+
+.compare-stats .stat-modified {
+  border-color: color-mix(in srgb, var(--warning) 45%, var(--border));
+  background: var(--tint-modified);
+}
+
+/* Editors */
+.compare-editors {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+.compare-editor-card {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.compare-editor-card header {
+  min-height: var(--panel-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 8px 6px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-bar-bg);
+}
+
+.compare-editor-card header span {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.compare-editor-card header small,
+.compare-result-header small {
+  margin-left: 8px;
+  color: var(--text-soft);
+  font-size: 0.76rem;
+}
+
+.compare-editor-card textarea {
+  width: 100%;
+  min-height: 240px;
+  padding: 14px;
+  border: 0;
+  outline: 0;
+  resize: vertical;
+  background: transparent;
+  color: var(--code-text);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.compare-center-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.compare-center-actions .soft-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 1.05rem;
+}
+
+/* Result */
+.compare-result {
+  overflow: hidden;
+}
+
+.compare-result-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-bar-bg);
+}
+
+.compare-result-header > div > span {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.compare-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+}
+
+.compare-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compare-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend-removed {
+  background: var(--danger);
+}
+
+.legend-modified {
+  background: var(--warning);
+}
+
+.legend-added {
+  background: var(--success);
+}
+
+.compare-notice {
+  margin: 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--tint-modified);
+  font-size: 0.8rem;
+}
+
+.compare-result-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.compare-result-columns span {
+  padding: 8px 16px;
+}
+
+.compare-rows {
+  max-height: 65vh;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.compare-cell {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+}
+
+.compare-cell:first-child {
+  border-right: 1px solid var(--border);
+}
+
+.compare-line-number {
+  padding: 1px 10px;
+  background: var(--surface-soft);
+  color: var(--text-soft);
+  text-align: right;
+  user-select: none;
+}
+
+.compare-cell code {
+  padding: 1px 12px;
+  color: var(--code-text);
+  font-family: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.row-added .compare-cell:last-child,
+.row-added .compare-cell:last-child .compare-line-number {
+  background: var(--tint-added);
+}
+
+.row-removed .compare-cell:first-child,
+.row-removed .compare-cell:first-child .compare-line-number {
+  background: var(--tint-removed);
+}
+
+.row-modified .compare-cell,
+.row-modified .compare-line-number {
+  background: var(--tint-modified);
+}
+
+@media (max-width: 900px) {
+  .compare-editors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .compare-center-actions {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 600px) {
+  .compare-rows {
+    font-size: 0.76rem;
+  }
+
+  .compare-cell {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .compare-line-number,
+  .compare-cell code {
+    padding-inline: 6px;
+  }
+}

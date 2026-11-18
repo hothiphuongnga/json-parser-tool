@@ -32,73 +32,37 @@
   --shadow: 0 20px 50px rgba(9, 89, 140, 0.14);
 }
 
-[data-theme="green"] {
-  --background: #eefaf5;
-  --foreground: #193b33;
-  --surface-soft: #f4fcf8;
-  --surface-muted: #dff4eb;
-  --border: #bfe2d3;
-  --brand: #0c9b72;
-  --brand-strong: #087154;
-  --brand-soft: #6bcfaf;
-  --brand-gradient-end: #22b88a;
-  --body-glow: rgba(34, 184, 138, 0.23);
-  --body-start: #f7fffb;
-  --body-end: #eefaf5;
-  --overlay: rgba(17, 64, 52, 0.28);
-  --code-text: #264d42;
-  --card-border: #c6e6d8;
-  --soft-band: #eefaf5;
-  --diff-accent: #0b9570;
-  --text-soft: #668477;
-  --shadow: 0 20px 50px rgba(8, 113, 84, 0.13);
-}
-
-[data-theme="violet"] {
-  --background: #efeffa;
-  --foreground: #342f56;
-  --surface-soft: #f6f6fd;
-  --surface-muted: #ecebfb;
-  --border: #d6d5ef;
-  --brand: #675fb5;
-  --brand-strong: #5850a4;
-  --brand-soft: #8f89cf;
-  --brand-gradient-end: #7c76c6;
-  --body-glow: rgba(133, 124, 206, 0.32);
-  --body-start: #f7f6ff;
-  --body-end: #efeffa;
-  --overlay: rgba(38, 31, 72, 0.26);
-  --code-text: #40395d;
-  --card-border: #d9d7ef;
-  --soft-band: #f4f3fd;
-  --diff-accent: #6660bb;
-  --text-soft: #7b7897;
-  --shadow: 0 20px 50px rgba(70, 57, 124, 0.12);
-}
-
-[data-theme="dark"] {
-  --background: #0e1724;
-  --foreground: #dbeafe;
-  --surface: #152235;
-  --surface-soft: #111d2d;
-  --surface-muted: #1e3047;
-  --border: #2c4663;
-  --brand: #38bdf8;
-  --brand-strong: #0f6c9f;
-  --brand-soft: #7dd3fc;
-  --brand-gradient-end: #2563eb;
-  --body-glow: rgba(56, 189, 248, 0.16);
-  --body-start: #0b1320;
-  --body-end: #111827;
-  --overlay: rgba(2, 10, 23, 0.62);
-  --panel-bg: rgba(21, 34, 53, 0.88);
-  --panel-bar-bg: rgba(17, 29, 45, 0.86);
-  --code-text: #dbeafe;
-  --card-border: #2c4663;
-  --soft-band: #17263a;
-  --diff-accent: #38bdf8;
-  --text-soft: #9fb3c8;
-  --shadow: 0 20px 50px rgba(0, 0, 0, 0.26);
+:root[data-theme="dark"] {
+  /* Neutral graphite surfaces, one soft blue accent, muted text. */
+  --background: #0f1115;
+  --foreground: #e6e8ec;
+  --surface: #16191f;
+  --surface-soft: #1b1f26;
+  --surface-muted: #232831;
+  --border: #2a3039;
+  --brand: #7aa2ff;
+  /* Used as the accent *text* colour, so it is the lighter tint in dark mode. */
+  --brand-strong: #a9c1ff;
+  --brand-soft: #5d6b88;
+  /* Text on solid accent fills (primary buttons, selected day): dark on light blue. */
+  --brand-contrast: #0b1020;
+  --brand-gradient-end: #a78bfa;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --panel-bg: #16191f;
+  --panel-bar-bg: #1a1e25;
+  --code-text: #d4d8df;
+  --card-border: #2a3039;
+  --soft-band: #1b1f26;
+  --diff-accent: #7aa2ff;
+  --text-soft: #8d95a3;
+  --success: #3fb950;
+  --warning: #d29922;
+  --danger: #f85149;
+  --syntax-string: #f0a77a;
+  --syntax-meta: #5fc9bf;
+  --moon-from: #1e2433;
+  --moon-to: #2e2a5c;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 @theme inline {
@@ -278,27 +242,8 @@ a {
   gap: 10px;
 }
 
-.theme-picker {
-  display: flex;
-  align-items: center;
-}
 
-.theme-picker select {
-  min-height: 26px;
-  padding: 0 28px 0 12px;
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  border-radius: 6px;
-  outline: 0;
-  background: rgba(255, 255, 255, 0.16);
-  color: var(--brand-contrast);
-  font-size: 0.84rem;
-  font-weight: 700;
-}
 
-.theme-picker option {
-  color: var(--foreground);
-  background: var(--surface);
-}
 
 .btn,
 .mini-btn,
@@ -826,11 +771,11 @@ a {
 }
 
 .tree-hint {
-  color: #238c84;
+  color: var(--syntax-meta);
 }
 
 .tree-value {
-  color: #b0553b;
+  color: var(--syntax-string);
 }
 
 .diff-view {
@@ -924,15 +869,15 @@ a {
 }
 
 .diff-stat-added {
-  color: #15a05b;
+  color: var(--success);
 }
 
 .diff-stat-removed {
-  color: #df3b49;
+  color: var(--danger);
 }
 
 .diff-stat-modified {
-  color: #cf7d05;
+  color: var(--warning);
 }
 
 .diff-compare {
@@ -987,17 +932,17 @@ a {
 }
 
 .diff-line.is-added .diff-line-code {
-  background: rgba(223, 249, 234, 0.88);
+  background: color-mix(in srgb, var(--success) 15%, var(--mix-base));
   box-shadow: inset 3px 0 0 #16a34a;
 }
 
 .diff-line.is-removed .diff-line-code {
-  background: rgba(255, 229, 232, 0.9);
+  background: color-mix(in srgb, var(--danger) 13%, var(--mix-base));
   box-shadow: inset 3px 0 0 #dc2626;
 }
 
 .diff-line.is-modified .diff-line-code {
-  background: rgba(255, 244, 202, 0.92);
+  background: color-mix(in srgb, var(--warning) 17%, var(--mix-base));
   box-shadow: inset 3px 0 0 #f59e0b;
 }
 
@@ -1185,49 +1130,16 @@ body {
   margin-right: 10px;
   border: 1px solid var(--brand);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--brand) 8%, white);
+  background: color-mix(in srgb, var(--brand) 8%, var(--mix-base));
   color: var(--brand-strong);
   font-family: var(--font-mono);
   font-size: 0.78rem;
 }
 
-.theme-picker {
-  min-height: 32px;
-  gap: 8px;
-  padding: 3px 8px 3px 10px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  background: var(--surface-soft);
-  color: var(--text-soft);
-  font-size: 0.75rem;
-  font-weight: 700;
-}
 
-.theme-picker input[type="color"] {
-  width: 24px;
-  height: 24px;
-  padding: 2px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--surface);
-  cursor: pointer;
-}
 
-.theme-picker input[type="color"]::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
 
-.theme-picker input[type="color"]::-webkit-color-swatch {
-  border: 0;
-  border-radius: 3px;
-}
 
-.theme-value {
-  min-width: 58px;
-  color: var(--foreground);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-}
 
 .btn,
 .mini-btn,
@@ -1251,7 +1163,7 @@ body {
 
 .btn:hover {
   border-color: var(--brand);
-  background: color-mix(in srgb, var(--brand) 6%, white);
+  background: color-mix(in srgb, var(--brand) 6%, var(--mix-base));
   color: var(--brand-strong);
 }
 
@@ -1262,25 +1174,25 @@ body {
 .markdown-copy-btn,
 .history-close-btn {
   border: 1px solid var(--brand);
-  background: color-mix(in srgb, var(--brand) 9%, white);
+  background: color-mix(in srgb, var(--brand) 9%, var(--mix-base));
   color: var(--brand-strong);
 }
 
 .btn-warning {
   border-color: color-mix(in srgb, var(--warning) 72%, #cbd5e1);
-  background: color-mix(in srgb, var(--warning) 9%, white);
+  background: color-mix(in srgb, var(--warning) 9%, var(--mix-base));
   color: #9a5b00;
 }
 
 .btn-success {
   border-color: color-mix(in srgb, var(--success) 70%, #cbd5e1);
-  background: color-mix(in srgb, var(--success) 8%, white);
+  background: color-mix(in srgb, var(--success) 8%, var(--mix-base));
   color: #087747;
 }
 
 .btn-danger {
   border-color: color-mix(in srgb, var(--danger) 68%, #cbd5e1);
-  background: color-mix(in srgb, var(--danger) 7%, white);
+  background: color-mix(in srgb, var(--danger) 7%, var(--mix-base));
   color: #bb2926;
 }
 
@@ -1320,7 +1232,7 @@ body {
 
 .tab.active {
   border-color: var(--brand);
-  background: color-mix(in srgb, var(--brand) 8%, white);
+  background: color-mix(in srgb, var(--brand) 8%, var(--mix-base));
   box-shadow: none;
 }
 
@@ -1378,13 +1290,13 @@ body {
 
 .statusbar {
   border-color: color-mix(in srgb, var(--brand) 24%, var(--border));
-  background: color-mix(in srgb, var(--brand) 7%, white);
+  background: color-mix(in srgb, var(--brand) 7%, var(--mix-base));
   color: var(--foreground);
 }
 
 .type-generate-btn {
   border: 1px solid var(--brand);
-  background: color-mix(in srgb, var(--brand) 9%, white);
+  background: color-mix(in srgb, var(--brand) 9%, var(--mix-base));
   color: var(--brand-strong);
   box-shadow: none;
 }
@@ -1653,5 +1565,1060 @@ textarea:focus-visible {
   .pathbar,
   .statusbar {
     font-size: 0.76rem;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Shared additions: site nav, panel actions, editor gutter, errors,
+   dark-mode tints and accessibility affordances.
+   ------------------------------------------------------------------ */
+
+:root {
+  --mix-base: #ffffff;
+  --syntax-string: #b0553b;
+  --syntax-meta: #238c84;
+  --moon-from: #1e40af;
+  --moon-to: #2563eb;
+  --editor-font-size: 0.95rem;
+  --editor-line-height: 1.7;
+}
+
+:root[data-theme="dark"] {
+  --mix-base: var(--surface);
+}
+
+[data-theme] {
+  color: var(--foreground);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.brand-tool {
+  margin-left: 8px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+.topbar .toolbar {
+  min-width: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.tool-nav {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tool-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.tool-nav .tool-link {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.tool-link[aria-current="page"] {
+  border-color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 12%, var(--mix-base));
+  color: var(--brand-strong);
+}
+
+
+/* Panel action buttons: quiet outline by default, one primary, one destructive. */
+.panel-header {
+  flex-wrap: wrap;
+  row-gap: 6px;
+}
+
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.panel-actions .mini-btn,
+.type-copy-btn {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--foreground);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.panel-actions .mini-btn:hover {
+  border-color: var(--brand);
+  color: var(--brand-strong);
+}
+
+.panel-actions .mini-btn-primary,
+.type-copy-btn {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--brand-contrast);
+}
+
+.panel-actions .mini-btn-primary:hover {
+  background: var(--brand-strong);
+  color: var(--brand-contrast);
+}
+
+.panel-actions .mini-btn-danger {
+  color: var(--danger);
+}
+
+.panel-actions .mini-btn-danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.type-copy-btn {
+  align-self: flex-end;
+}
+
+/* Editor: no wrapping, so the gutter numbers line up with the text. */
+.editor {
+  white-space: pre;
+  overflow-wrap: normal;
+  font-size: var(--editor-font-size);
+  line-height: var(--editor-line-height);
+}
+
+.line-gutter {
+  padding: 16px 10px 16px 8px;
+  white-space: pre;
+  font-size: var(--editor-font-size);
+  line-height: var(--editor-line-height);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+
+.line-gutter .is-error {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Parse error with location + excerpt */
+.error-location {
+  margin: 0 0 6px;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.error-excerpt {
+  margin: 12px 0 0;
+  padding: 12px;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--danger) 5%, var(--mix-base));
+  color: var(--code-text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.error-excerpt .is-error {
+  color: var(--danger);
+}
+
+.error-line-number {
+  display: inline-block;
+  width: 3.5em;
+  margin-right: 12px;
+  color: var(--text-soft);
+  text-align: right;
+}
+
+.error-caret {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Tree / list views */
+.tree-label {
+  cursor: pointer;
+}
+
+.tree-label:hover,
+.tree-label[aria-current="true"] {
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
+}
+
+.tree-more {
+  display: block;
+  margin: 4px 0;
+  padding: 6px 8px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--brand-strong);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+
+.text-card-path {
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.text-card.is-selected {
+  border-color: var(--brand);
+}
+
+.markdown-mode-item {
+  display: contents;
+}
+
+/* Resize handles: pointer, touch and keyboard */
+.resize-handle {
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.resize-handle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  outline-offset: -2px;
+}
+
+.statusbar [role="status"] {
+  flex-shrink: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dark theme: surfaces that the flat theme hardcodes as light. */
+[data-theme="dark"] .topbar,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .history-drawer {
+  background: var(--surface);
+}
+
+[data-theme="dark"] .btn-muted {
+  border-color: var(--border);
+  background: var(--surface-soft);
+  color: var(--foreground);
+}
+
+
+[data-theme="dark"] .markdown-render table thead,
+[data-theme="dark"] .markdown-render table th {
+  background: var(--surface-muted);
+}
+
+[data-theme="dark"] .editor,
+[data-theme="dark"] .diff-editor,
+[data-theme="dark"] .code-view {
+  color: var(--code-text);
+}
+
+@media (max-width: 1280px) {
+  :root {
+    --editor-font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar .toolbar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .brand-tool {
+    display: none;
+  }
+}
+
+
+/* Grid tracks must be allowed to shrink below their content (long <pre> lines),
+   otherwise single-column layouts overflow the viewport horizontally. */
+.panel {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .workspace,
+  .type-tool-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .panel-tools.panel-actions {
+    width: auto;
+    justify-content: flex-start;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Scrolling tool pages (So sánh, Lịch âm, Đếm ngày): same top bar,
+   tokens, cards and controls as the editor-style tools.
+   ------------------------------------------------------------------ */
+
+.page-shell {
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.page-shell .topbar {
+  position: sticky;
+  top: 0;
+}
+
+.page-content {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: 16px 16px 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.page-heading h1 {
+  margin: 4px 0 0;
+  color: var(--foreground);
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.page-heading p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.page-kicker,
+.page-heading .page-kicker {
+  display: block;
+  margin: 0;
+  color: var(--brand-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+
+.page-footer {
+  padding-top: 4px;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+/* Form controls on page cards */
+.page-shell input[type="text"],
+.page-shell input[type="number"],
+.page-shell select {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: 0;
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 0.92rem;
+}
+
+.page-shell input[type="text"]:focus,
+.page-shell input[type="number"]:focus,
+.page-shell select:focus {
+  border-color: var(--brand);
+}
+
+.page-shell input[type="checkbox"] {
+  accent-color: var(--brand);
+}
+
+/* Small secondary button, same look as panel actions */
+.soft-btn {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.soft-btn:hover {
+  border-color: var(--brand);
+  color: var(--brand-strong);
+}
+
+
+.soft-btn-primary {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--brand-contrast);
+}
+
+.soft-btn-primary:hover {
+  background: var(--brand-strong);
+  color: var(--brand-contrast);
+}
+
+.soft-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* react-day-picker popovers */
+.picker-popover {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16);
+}
+
+.picker-popover .rdp-root {
+  --rdp-accent-color: var(--brand);
+  --rdp-accent-background-color: color-mix(in srgb, var(--brand) 12%, var(--mix-base));
+  --rdp-day-height: 36px;
+  --rdp-day-width: 36px;
+  --rdp-day_button-height: 34px;
+  --rdp-day_button-width: 34px;
+  --rdp-today-color: var(--brand-strong);
+  color: var(--foreground);
+  font-size: 0.86rem;
+}
+
+.picker-popover .rdp-dropdown {
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.picker-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 720px) {
+  .page-content {
+    padding: 12px 12px 20px;
+    gap: 12px;
+  }
+}
+
+.picker-popover {
+  min-width: 316px;
+}
+
+.picker-popover .rdp-month_caption {
+  padding-right: 64px;
+  font-size: 0.92rem;
+}
+
+.picker-popover .rdp-chevron {
+  fill: var(--brand);
+}
+
+/* ------------------------------------------------------------------
+   Light / dark switch + circular reveal from the top-right corner
+   ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+.theme-toggle {
+  position: relative;
+  width: 64px;
+  height: 32px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e0f2fe, #fef3c7);
+  cursor: pointer;
+  transition: background 300ms ease, border-color 300ms ease;
+}
+
+.theme-toggle[aria-checked="true"] {
+  border-color: #334155;
+  background: linear-gradient(135deg, #0f172a, #312e81);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.theme-toggle-icon {
+  position: relative;
+  z-index: 0;
+  width: 16px;
+  height: 16px;
+  display: inline-grid;
+  place-items: center;
+}
+
+.theme-toggle-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle-sun svg {
+  stroke: #f59e0b;
+}
+
+.theme-toggle-moon svg {
+  fill: #c7d2fe;
+  stroke: #c7d2fe;
+}
+
+.theme-toggle-knob {
+  position: absolute;
+  z-index: 1;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+  transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1), background 300ms ease;
+}
+
+/* Light: knob covers the moon side so the sun shows; dark: it slides over the sun. */
+.theme-toggle[aria-checked="false"] .theme-toggle-knob {
+  transform: translateX(32px);
+}
+
+.theme-toggle[aria-checked="true"] .theme-toggle-knob {
+  transform: translateX(0);
+  background: #e2e8f0;
+}
+
+.theme-toggle:hover .theme-toggle-knob {
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.35);
+}
+
+/* The reveal itself is animated from JS (lib/theme.ts); disable the default cross-fade. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle-knob {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   One container for every page: top bar content, ads, workspaces,
+   status bar and scrolling page content all share the same edges.
+   ------------------------------------------------------------------ */
+
+:root {
+  --container: 1280px;
+  --gutter: 16px;
+  /* Side padding that centres a --container-wide column inside a full-width parent. */
+  --page-inline: max(var(--gutter), calc((100% - var(--container)) / 2));
+}
+
+.topbar {
+  padding-left: var(--page-inline);
+  padding-right: var(--page-inline);
+}
+
+.google-ad {
+  width: 100%;
+  max-width: calc(var(--container) + 2 * var(--gutter));
+  padding-inline: var(--gutter);
+}
+
+/* Editor-style tools (fixed top bar + full-height workspace). Selectors are
+   scoped to the shell so they win over each page's own stylesheet. */
+.parser-shell > .workspace,
+.parser-shell > .type-tool-workspace,
+.html-shell > .html-workspace {
+  padding-left: var(--page-inline);
+  padding-right: var(--page-inline);
+}
+
+.parser-shell > .statusbar,
+.html-shell > .statusbar {
+  left: max(var(--gutter), calc((100% - var(--container)) / 2));
+  right: max(var(--gutter), calc((100% - var(--container)) / 2));
+}
+
+/* Scrolling tools */
+.page-content {
+  width: 100%;
+  max-width: calc(var(--container) + 2 * var(--gutter));
+  padding-inline: var(--gutter);
+}
+
+@media (max-width: 1100px) {
+  /* Status bar is in normal flow here; keep it on the same edges as the panels. */
+  .parser-shell > .statusbar,
+  .html-shell > .statusbar {
+    margin-inline: var(--gutter);
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --gutter: 12px;
+  }
+}
+
+/* The path bar is the footer of the output panel (it used to be a fixed bar hidden
+   behind the status bar). */
+.output-panel > .pathbar {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  flex-shrink: 0;
+  min-height: 34px;
+  margin: 0;
+  padding: 6px 14px;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------
+   Workspace width: "focus" (centred container, default) or "wide".
+   ------------------------------------------------------------------ */
+
+.header-toggles {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+:root[data-layout="wide"] .parser-shell,
+:root[data-layout="wide"] .html-shell {
+  --container: 100%;
+  --page-inline: var(--gutter);
+}
+
+/* Smoothly widen / narrow when switching. */
+.parser-shell > .topbar,
+.parser-shell > .workspace,
+.parser-shell > .type-tool-workspace,
+.html-shell > .topbar,
+.html-shell > .html-workspace,
+.parser-shell > .statusbar,
+.html-shell > .statusbar {
+  transition: padding 320ms cubic-bezier(0.4, 0, 0.2, 1), left 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    right 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.layout-toggle {
+  position: relative;
+  width: 64px;
+  height: 32px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: background 300ms ease, border-color 300ms ease;
+}
+
+.layout-toggle[aria-checked="true"] {
+  border-color: color-mix(in srgb, var(--brand) 50%, var(--border));
+  background: color-mix(in srgb, var(--brand) 14%, var(--mix-base));
+  color: var(--brand);
+}
+
+.layout-toggle:hover {
+  border-color: var(--brand);
+}
+
+.layout-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.pill-toggle-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-grid;
+  place-items: center;
+}
+
+.pill-toggle-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pill-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.22);
+  transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Focus: knob covers the "wide" icon; wide: it slides over the "focus" icon. */
+.layout-toggle[aria-checked="false"] .pill-toggle-knob {
+  transform: translateX(32px);
+}
+
+[data-theme="dark"] .pill-toggle-knob {
+  background: #e2e8f0;
+}
+
+/* Below this width the workspace already spans the screen, so the switch has no effect. */
+@media (max-width: 1100px) {
+  .layout-toggle {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layout-toggle,
+  .pill-toggle-knob,
+  .parser-shell > *,
+  .html-shell > * {
+    transition: none;
+  }
+}
+
+/* Dark mode refinements */
+[data-theme="dark"] .picker-popover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .history-drawer {
+  box-shadow: 12px 0 30px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .topbar {
+  border-bottom-color: var(--border);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .statusbar {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text-soft);
+}
+
+[data-theme="dark"] ::selection {
+  background: color-mix(in srgb, var(--brand) 35%, transparent);
+}
+
+[data-theme="dark"] .tool-link[aria-current="page"] {
+  border-color: color-mix(in srgb, var(--brand) 55%, var(--border));
+  background: color-mix(in srgb, var(--brand) 16%, var(--surface));
+  color: var(--brand-strong);
+}
+
+/* .tool-nav scrolls horizontally, and any overflow clips the other axis too. Give the
+   buttons room for the 1px hover lift and the 3px + 2px focus ring, then cancel the
+   extra space with negative margins so the nav keeps its position. */
+.tool-nav {
+  padding: 6px;
+  margin: -6px;
+}
+
+/* ------------------------------------------------------------------
+   Language menu: fixed-width pill button + dropdown panel.
+   ------------------------------------------------------------------ */
+
+.lang-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.lang-menu-button {
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 7px 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.lang-menu-button:hover,
+.lang-menu-button[aria-expanded="true"] {
+  border-color: color-mix(in srgb, var(--brand) 60%, var(--border));
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface-soft));
+}
+
+.lang-menu-button:focus-visible,
+.lang-menu-item:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.lang-menu-code {
+  min-width: 2.2ch;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.lang-menu-globe,
+.lang-menu-chevron,
+.lang-menu-check {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lang-menu-globe {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.7;
+  color: var(--brand);
+}
+
+.lang-menu-chevron {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.2;
+  color: var(--text-soft);
+  transition: transform 200ms ease;
+}
+
+.lang-menu-button[aria-expanded="true"] .lang-menu-chevron {
+  transform: rotate(180deg);
+}
+
+.lang-menu-panel {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 232px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14), 0 2px 6px rgba(15, 23, 42, 0.06);
+  transform-origin: top right;
+  animation: lang-menu-in 160ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+[data-theme="dark"] .lang-menu-panel {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+}
+
+@keyframes lang-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+}
+
+.lang-menu-title {
+  margin: 0;
+  padding: 6px 10px 6px;
+  color: var(--text-soft);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lang-menu-list {
+  display: grid;
+  gap: 2px;
+}
+
+.lang-menu-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px 7px 8px;
+  border-radius: 9px;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: background 120ms ease;
+}
+
+.lang-menu-item:hover,
+.lang-menu-item:focus-visible {
+  background: var(--surface-soft);
+}
+
+.lang-menu-item[aria-current="true"] {
+  background: color-mix(in srgb, var(--brand) 10%, var(--surface));
+}
+
+.lang-menu-badge {
+  width: 30px;
+  height: 22px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  color: var(--text-soft);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.lang-menu-item[aria-current="true"] .lang-menu-badge {
+  border-color: transparent;
+  background: var(--brand);
+  color: var(--brand-contrast);
+}
+
+.lang-menu-names {
+  min-width: 0;
+  display: grid;
+  line-height: 1.25;
+}
+
+.lang-menu-native {
+  overflow: hidden;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lang-menu-item[aria-current="true"] .lang-menu-native {
+  color: var(--brand-strong);
+}
+
+.lang-menu-translated {
+  overflow: hidden;
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lang-menu-check {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.4;
+  color: var(--brand);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-menu-panel {
+    animation: none;
+  }
+}
+
+.not-found {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 48px 0;
+}
+
+/* Room between the scrolling tool nav (which has -6px margins) and the switches. */
+.topbar .toolbar {
+  gap: 16px;
+}
+
+@media (max-width: 720px) {
+  /* Status text and copyright stack instead of overflowing the bar. */
+  .statusbar {
+    height: auto;
+    flex-wrap: wrap;
+    row-gap: 2px;
+    padding-block: 8px;
   }
 }

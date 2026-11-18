@@ -1,0 +1,306 @@
+/* Đếm ngày — built on the shared tokens in globals.css. */
+
+.day-counter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.day-counter-copy {
+  padding-top: 8px;
+}
+
+.day-counter-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+/* Date fields */
+.date-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.date-picker-card {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.date-picker-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.date-picker-step {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--brand) 14%, var(--mix-base));
+  color: var(--brand-strong);
+  font-size: 0.7rem;
+}
+
+
+.date-input-shell {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.date-input-shell:hover,
+.date-input-shell[aria-expanded="true"] {
+  border-color: var(--brand);
+}
+
+.date-input-shell svg,
+.date-swap-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.date-calendar-icon {
+  display: inline-flex;
+  color: var(--brand);
+}
+
+.date-input-value {
+  flex: 1;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.date-input-chevron {
+  color: var(--text-soft);
+}
+
+.date-picker-preview {
+  color: var(--text-soft);
+  font-size: 0.78rem;
+}
+
+.date-swap-button {
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--brand);
+  cursor: pointer;
+}
+
+.date-swap-button:hover {
+  border-color: var(--brand);
+}
+
+/* Toggle */
+.glass-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.glass-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--border);
+  transition: background 140ms ease;
+}
+
+.toggle-track span {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+  transition: transform 140ms ease;
+}
+
+.glass-toggle input:checked + .toggle-track {
+  background: var(--brand);
+}
+
+.glass-toggle input:checked + .toggle-track span {
+  transform: translateX(16px);
+}
+
+.glass-toggle input:focus-visible + .toggle-track {
+  outline: 3px solid color-mix(in srgb, var(--brand) 30%, transparent);
+  outline-offset: 2px;
+}
+
+/* Quick actions + custom offset */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.custom-offset {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.custom-offset-label {
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.custom-offset-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.custom-offset-controls .soft-btn {
+  min-height: 38px;
+}
+
+.custom-offset small {
+  color: var(--text-soft);
+  font-size: 0.76rem;
+}
+
+/* Result */
+.result-band {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.result-main {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+}
+
+.result-main span {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.result-main strong {
+  color: var(--brand-strong);
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+
+.result-main p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric-grid article {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.metric-grid span {
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.metric-grid strong {
+  font-size: 0.98rem;
+}
+
+@media (max-width: 900px) {
+  .day-counter-grid,
+  .result-band {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .date-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .date-swap-button {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .custom-offset-controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .custom-offset-controls .soft-btn {
+    grid-column: 1 / -1;
+  }
+
+  .metric-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

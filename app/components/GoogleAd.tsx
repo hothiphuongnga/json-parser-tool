@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "./I18nProvider";
 import { useEffect, useRef } from "react";
 
 declare global {
@@ -13,6 +14,7 @@ const publisherId =
 const adSlot = process.env.NEXT_PUBLIC_ADSENSE_SLOT;
 
 export default function GoogleAd() {
+  const { t } = useI18n();
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function GoogleAd() {
   if (!adSlot) return null;
 
   return (
-    <aside aria-label="Quảng cáo" className="google-ad">
+    <aside aria-label={t.common.advertisement} className="google-ad">
       <ins
         className="adsbygoogle"
         data-ad-client={publisherId}

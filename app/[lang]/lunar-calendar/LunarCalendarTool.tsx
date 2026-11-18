@@ -1,10 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import GoogleAd from "../components/GoogleAd";
+import GoogleAd from "@/app/components/GoogleAd";
+import { useI18n } from "@/app/components/I18nProvider";
+import SiteHeader from "@/app/components/SiteHeader";
+import { useIsClient } from "@/lib/hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
-import { vi } from "react-day-picker/locale";
+import { enUS, ja, ko, vi, zhCN } from "react-day-picker/locale";
 import "react-day-picker/style.css";
 import "./lunar-calendar.css";
 
@@ -33,21 +35,6 @@ type LunarLookup = {
 const TIME_ZONE = 7;
 const CAN = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
 const CHI = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
-const WEEKDAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-const MONTH_NAMES = [
-  "Tháng 1",
-  "Tháng 2",
-  "Tháng 3",
-  "Tháng 4",
-  "Tháng 5",
-  "Tháng 6",
-  "Tháng 7",
-  "Tháng 8",
-  "Tháng 9",
-  "Tháng 10",
-  "Tháng 11",
-  "Tháng 12",
-];
 const GOOD_HOUR_PATTERNS = [
   "110100101100",
   "001101001011",
@@ -368,23 +355,22 @@ function buildCalendarDays(viewDate: Date, selectedDate: Date): CalendarDay[] {
   });
 }
 
-function moonPhase(lunarDay: number) {
-  if (lunarDay <= 2 || lunarDay >= 29) {
-    return "Trăng non";
-  }
-  if (lunarDay < 8) {
-    return "Trăng thượng huyền";
-  }
-  if (lunarDay <= 16) {
-    return "Trăng tròn";
-  }
-  if (lunarDay < 24) {
-    return "Trăng hạ huyền";
-  }
-  return "Cuối tuần trăng";
+const PICKER_LOCALES = { en: enUS, vi, zh: zhCN, ja, ko } as const;
+
+type MoonPhase = "new" | "firstQuarter" | "full" | "lastQuarter" | "waning";
+
+/** Moon phase key for a lunar day; the label comes from the dictionary. */
+function moonPhase(lunarDay: number): MoonPhase {
+  if (lunarDay <= 2 || lunarDay >= 29) return "new";
+  if (lunarDay < 8) return "firstQuarter";
+  if (lunarDay <= 16) return "full";
+  if (lunarDay < 24) return "lastQuarter";
+  return "waning";
 }
 
-export default function LunarCalendarPage() {
+function LunarCalendarContent() {
+  const { t, locale } = useI18n();
+  const tl = t.lunar;
   const today = useMemo(() => new Date(), []);
   const solarPickerRef = useRef<HTMLDivElement | null>(null);
   const todayLunar = useMemo(
@@ -403,7 +389,7 @@ export default function LunarCalendarPage() {
   });
   const days = useMemo(() => buildCalendarDays(viewDate, selectedDate), [selectedDate, viewDate]);
   const selectedLunar = convertSolarToLunar(selectedDate.getDate(), selectedDate.getMonth() + 1, selectedDate.getFullYear());
-  const monthTitle = `${MONTH_NAMES[viewDate.getMonth()]} ${viewDate.getFullYear()}`;
+  const monthTitle = tl.monthTitle(viewDate.getMonth() + 1, viewDate.getFullYear());
   const solarLookupResult = useMemo(() => {
     const date = parseDateInput(solarLookup);
     if (!date) {
@@ -480,32 +466,18 @@ export default function LunarCalendarPage() {
   }
 
   return (
-    <main className="lunar-shell">
-      <header className="lunar-topbar">
-        <Link className="lunar-brand" href="/">
-          Tools Calendar
-        </Link>
-        <nav className="lunar-nav" aria-label="Tools">
-          <Link href="/">JSON Parser</Link>
-          <Link href="/json-to-type">JSON to Type</Link>
-          <Link href="/dem-ngay">Đếm ngày</Link>
-          <Link href="/compare">Compare</Link>
-        </nav>
-      </header>
-
-      <GoogleAd />
-
-      <section className="lookup-stage" aria-label="Chuyển đổi lịch âm dương">
-        <div className="lookup-heading">
-          <span>Tra cứu nhanh</span>
-          <h1>Đổi ngày âm dương</h1>
+    <LunarShell>
+      <section className="lookup-stage" aria-label={tl.converterLabel}>
+        <div className="page-heading lookup-heading">
+          <span className="page-kicker">{tl.kicker}</span>
+          <h1>{tl.title}</h1>
         </div>
 
         <div className="converter-panel">
-          <article className="converter-card">
-            <span>Đổi dương sang âm</span>
+          <article className="converter-card card">
+            <span className="converter-title">{tl.solarToLunar}</span>
             <label>
-              Ngày dương
+              {tl.solarDate}
               <div className="date-picker-shell" ref={solarPickerRef}>
                 <input
                   onFocus={(event) => {
@@ -520,7 +492,7 @@ export default function LunarCalendarPage() {
                 <button
                   aria-expanded={solarPickerOpen}
                   aria-haspopup="dialog"
-                  aria-label="Mở chọn ngày dương"
+                  aria-label={tl.openPicker}
                   onClick={() => setSolarPickerOpen((current) => !current)}
                   type="button"
                 >
@@ -529,13 +501,13 @@ export default function LunarCalendarPage() {
                   </svg>
                 </button>
                 {solarPickerOpen && (
-                  <div className="lunar-date-popover" role="dialog" aria-label="Chọn ngày dương">
+                  <div className="picker-popover lunar-date-popover" role="dialog" aria-label={tl.pickSolar}>
                     <DayPicker
                       animate
                       captionLayout="dropdown"
                       endMonth={new Date(2100, 11)}
                       fixedWeeks
-                      locale={vi}
+                      locale={PICKER_LOCALES[locale]}
                       mode="single"
                       onSelect={(date) => {
                         if (!date) return;
@@ -547,18 +519,19 @@ export default function LunarCalendarPage() {
                       showOutsideDays
                       startMonth={new Date(1900, 0)}
                     />
-                    <div className="lunar-picker-footer">
-                      <button type="button" onClick={() => setSolarPickerOpen(false)}>
-                        Đóng
+                    <div className="picker-footer">
+                      <button className="soft-btn" type="button" onClick={() => setSolarPickerOpen(false)}>
+                        {t.common.close}
                       </button>
                       <button
+                        className="soft-btn"
                         type="button"
                         onClick={() => {
                           jumpToday();
                           setSolarPickerOpen(false);
                         }}
                       >
-                        Hôm nay
+                        {t.common.today}
                       </button>
                     </div>
                   </div>
@@ -567,16 +540,16 @@ export default function LunarCalendarPage() {
             </label>
             <strong>
               {solarLookupResult
-                ? `${solarLookupResult.day}/${solarLookupResult.month}${solarLookupResult.leap ? " nhuận" : ""}/${solarLookupResult.year}`
-                : "Ngày dương không hợp lệ"}
+                ? `${solarLookupResult.day}/${solarLookupResult.month}${solarLookupResult.leap ? tl.leapSuffix : ""}/${solarLookupResult.year}`
+                : tl.invalidSolar}
             </strong>
           </article>
 
-          <article className="converter-card">
-            <span>Đổi âm sang dương</span>
+          <article className="converter-card card">
+            <span className="converter-title">{tl.lunarToSolar}</span>
             <div className="lunar-input-grid">
               <label>
-                Ngày
+                {tl.day}
                 <input
                   inputMode="numeric"
                   max="30"
@@ -587,7 +560,7 @@ export default function LunarCalendarPage() {
                 />
               </label>
               <label>
-                Tháng
+                {tl.month}
                 <input
                   inputMode="numeric"
                   max="12"
@@ -598,7 +571,7 @@ export default function LunarCalendarPage() {
                 />
               </label>
               <label>
-                Năm
+                {tl.year}
                 <input
                   inputMode="numeric"
                   min="1"
@@ -614,72 +587,72 @@ export default function LunarCalendarPage() {
                 onChange={(event) => setLunarLookup((current) => ({ ...current, leap: event.target.checked }))}
                 type="checkbox"
               />
-              Tháng nhuận
+              {tl.leapMonth}
             </label>
             <strong>
               {lunarLookupResult
                 ? formatSolarParts(lunarLookupResult.day, lunarLookupResult.month, lunarLookupResult.year)
-                : "Ngày âm không hợp lệ"}
+                : tl.invalidLunar}
             </strong>
           </article>
         </div>
       </section>
 
       <section className="lunar-stage">
-        <aside className="lunar-detail">
+        <aside className="lunar-detail card">
           <div className="moon-card">
             <span className="moon-visual" aria-hidden="true" />
             <div>
               <p>{formatSolarDate(selectedDate)}</p>
-              <h1>
+              <p className="moon-day">
                 {selectedLunar.day}
-                <span>/{selectedLunar.month}{selectedLunar.leap ? " nhuận" : ""}</span>
-              </h1>
+                <span>/{selectedLunar.month}{selectedLunar.leap ? tl.leapSuffix : ""}</span>
+              </p>
               <strong>{canChiYear(selectedLunar.year)}</strong>
             </div>
           </div>
 
           <div className="lunar-note-grid">
             <article>
-              <span>Ngày</span>
+              <span>{tl.dayCanChi}</span>
               <strong>{canChiDay(selectedDate)}</strong>
             </article>
             <article>
-              <span>Tháng</span>
+              <span>{tl.monthCanChi}</span>
               <strong>{canChiMonth(selectedLunar)}</strong>
             </article>
             <article>
-              <span>Tuần trăng</span>
-              <strong>{moonPhase(selectedLunar.day)}</strong>
+              <span>{tl.moonPhase}</span>
+              <strong>{tl.phases[moonPhase(selectedLunar.day)]}</strong>
             </article>
             <article>
-              <span>Giờ hoàng đạo</span>
+              <span>{tl.goodHours}</span>
               <strong>{goodHours(selectedDate)}</strong>
             </article>
           </div>
         </aside>
 
-        <section className="calendar-board">
+        <section className="calendar-board card">
           <div className="calendar-toolbar">
             <div>
-              <span>Lịch âm Việt Nam</span>
+              <span className="page-kicker">{tl.calendarKicker}</span>
               <h2>{monthTitle}</h2>
             </div>
             <div className="calendar-actions">
-              <button onClick={() => moveMonth(-1)} type="button" aria-label="Tháng trước">
+              <button className="soft-btn" onClick={() => moveMonth(-1)} type="button" aria-label={tl.prevMonth}>
                 ‹
               </button>
-              <button onClick={jumpToday} type="button">
-                Hôm nay
+              <button className="soft-btn" onClick={jumpToday} type="button">
+                {t.common.today}
               </button>
-              <button onClick={() => moveMonth(1)} type="button" aria-label="Tháng sau">
+              <button className="soft-btn" onClick={() => moveMonth(1)} type="button" aria-label={tl.nextMonth}>
                 ›
               </button>
             </div>
           </div>
 
           <div className="weekday-row">
-            {WEEKDAYS.map((day) => (
+            {tl.weekdays.map((day) => (
               <span key={day}>{day}</span>
             ))}
           </div>
@@ -708,6 +681,42 @@ export default function LunarCalendarPage() {
           </div>
         </section>
       </section>
+    </LunarShell>
+  );
+}
+
+function LunarShell({ children }: { children: React.ReactNode }) {
+  const { t } = useI18n();
+  return (
+    <main className="page-shell lunar-shell">
+      <SiteHeader tool="lunarCalendar" />
+      <GoogleAd />
+      <div className="page-content">
+        {children}
+        <footer className="page-footer">{t.site.copyright}</footer>
+      </div>
     </main>
+  );
+}
+
+/**
+ * Everything below depends on "today" in the visitor's time zone, which the server
+ * (prerendered at build time) cannot know. The header and heading render on the server;
+ * the calendar renders after hydration so it never shows a stale date.
+ */
+export default function LunarCalendarTool() {
+  const { t } = useI18n();
+  const isClient = useIsClient();
+  if (isClient) return <LunarCalendarContent />;
+
+  return (
+    <LunarShell>
+      <section aria-busy="true" className="lookup-stage">
+        <div className="page-heading lookup-heading">
+          <span className="page-kicker">{t.lunar.kicker}</span>
+          <h1>{t.lunar.title}</h1>
+        </div>
+      </section>
+    </LunarShell>
   );
 }

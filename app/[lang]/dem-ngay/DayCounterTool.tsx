@@ -1,22 +1,31 @@
 "use client";
 
-import Link from "next/link";
-import GoogleAd from "../components/GoogleAd";
+import GoogleAd from "@/app/components/GoogleAd";
+import { useI18n } from "@/app/components/I18nProvider";
+import SiteHeader from "@/app/components/SiteHeader";
+import { useIsClient } from "@/lib/hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
-import { vi } from "react-day-picker/locale";
+import { enUS, ja, ko, vi, zhCN } from "react-day-picker/locale";
 import "react-day-picker/style.css";
 import "./dem-ngay.css";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 type OffsetUnit = "days" | "months" | "years";
 
-const DATE_FORMATTER = new Intl.DateTimeFormat("vi-VN", {
-  weekday: "long",
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
+const PICKER_LOCALES = { en: enUS, vi, zh: zhCN, ja, ko } as const;
+
+const dateFormatters = new Map<string, Intl.DateTimeFormat>();
+
+/** Long date in the page language, e.g. "Wednesday, 11/18/2026" / "Thứ Tư, 18/11/2026". */
+function formatDate(date: Date, intl: string) {
+  let formatter = dateFormatters.get(intl);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(intl, { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" });
+    dateFormatters.set(intl, formatter);
+  }
+  return formatter.format(date);
+}
 
 function toDateInputValue(date: Date) {
   const year = date.getFullYear();
@@ -54,10 +63,6 @@ function addOffset(date: Date, amount: number, unit: OffsetUnit) {
   return next;
 }
 
-function formatDate(date: Date) {
-  return DATE_FORMATTER.format(date);
-}
-
 function getMonthDistance(from: Date, to: Date) {
   let months = (to.getFullYear() - from.getFullYear()) * 12 + to.getMonth() - from.getMonth();
 
@@ -76,10 +81,6 @@ function getMonthDistance(from: Date, to: Date) {
   };
 }
 
-function pluralDay(value: number) {
-  return `${value.toLocaleString("vi-VN")} ngày`;
-}
-
 type GlassDatePickerProps = {
   label: string;
   step: string;
@@ -88,6 +89,7 @@ type GlassDatePickerProps = {
 };
 
 function GlassDatePicker({ label, step, value, onChange }: GlassDatePickerProps) {
+  const { t, intl, locale } = useI18n();
   const [open, setOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
   const selectedDate = parseLocalDate(value);
@@ -129,7 +131,7 @@ function GlassDatePicker({ label, step, value, onChange }: GlassDatePickerProps)
           </svg>
         </span>
         <span className="date-input-value">
-          {selectedDate.toLocaleDateString("vi-VN", {
+          {selectedDate.toLocaleDateString(intl, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
@@ -139,16 +141,16 @@ function GlassDatePicker({ label, step, value, onChange }: GlassDatePickerProps)
           <path d="m8 10 4 4 4-4" />
         </svg>
       </button>
-      <span className="date-picker-preview">{formatDate(selectedDate)}</span>
+      <span className="date-picker-preview">{formatDate(selectedDate, intl)}</span>
 
       {open && (
-        <div className="date-picker-popover" role="dialog" aria-label={`Chọn ${label.toLowerCase()}`}>
+        <div className="picker-popover date-picker-popover" role="dialog" aria-label={t.dayCounter.pick(label)}>
           <DayPicker
             animate
             captionLayout="dropdown"
             endMonth={new Date(2100, 11)}
             fixedWeeks
-            locale={vi}
+            locale={PICKER_LOCALES[locale]}
             mode="single"
             onSelect={(date) => {
               if (!date) return;
@@ -159,18 +161,19 @@ function GlassDatePicker({ label, step, value, onChange }: GlassDatePickerProps)
             showOutsideDays
             startMonth={new Date(1900, 0)}
           />
-          <div className="date-picker-footer">
-            <button type="button" onClick={() => setOpen(false)}>
-              Đóng
+          <div className="picker-footer">
+            <button className="soft-btn" type="button" onClick={() => setOpen(false)}>
+              {t.common.close}
             </button>
             <button
+              className="soft-btn"
               type="button"
               onClick={() => {
                 onChange(toDateInputValue(new Date()));
                 setOpen(false);
               }}
             >
-              Hôm nay
+              {t.common.today}
             </button>
           </div>
         </div>
@@ -179,7 +182,9 @@ function GlassDatePicker({ label, step, value, onChange }: GlassDatePickerProps)
   );
 }
 
-export default function DayCounterPage() {
+function DayCounterContent() {
+  const { t, n, intl } = useI18n();
+  const td = t.dayCounter;
   const today = useMemo(() => startOfLocalDay(new Date()), []);
   const tomorrow = useMemo(() => addDays(today, 1), [today]);
   const [fromDate, setFromDate] = useState(toDateInputValue(today));
@@ -219,43 +224,25 @@ export default function DayCounterPage() {
 
   const rangeLabel =
     result.direction === 1
-      ? `${formatDate(result.from)} đến ${formatDate(result.to)}`
-      : `${formatDate(result.to)} đến ${formatDate(result.from)}`;
+      ? td.range(formatDate(result.from, intl), formatDate(result.to, intl))
+      : td.range(formatDate(result.to, intl), formatDate(result.from, intl));
 
   const todayLabel =
     result.fromToday === 0
-      ? "Kết thúc vào hôm nay"
+      ? td.endsToday
       : result.last < today
-        ? `Mốc cuối đã qua ${Math.abs(result.fromToday).toLocaleString("vi-VN")} ngày`
-        : `Còn ${result.fromToday.toLocaleString("vi-VN")} ngày tới mốc cuối`;
+        ? td.endPassed(n(Math.abs(result.fromToday)))
+        : td.endAhead(n(result.fromToday));
 
   return (
-    <main className="day-counter-shell">
-      <section className="day-counter-hero">
-        <div className="day-counter-nav">
-          <Link href="/" className="day-counter-back">
-            JSON Tool
-          </Link>
-          <div className="day-counter-nav-links">
-            <Link href="/compare">Compare</Link>
-            <span>Đếm ngày</span>
-          </div>
-        </div>
+    <DayCounterShell>
+      <section className="day-counter-grid">
+          <DayCounterIntro />
 
-        <div className="day-counter-grid">
-          <div className="day-counter-copy">
-            <p className="day-counter-kicker">Date distance calculator</p>
-            <h1>Đếm ngày từ mốc này đến mốc kia</h1>
-            <p>
-              Chọn hai ngày bất kỳ để xem khoảng cách chính xác, tính theo ngày,
-              tuần và nhịp tháng/năm dễ đọc.
-            </p>
-          </div>
-
-          <form className="day-counter-card" aria-label="Công cụ đếm ngày">
+          <form className="day-counter-card card" aria-label={td.formLabel}>
             <div className="date-fields">
               <GlassDatePicker
-                label="Ngày bắt đầu"
+                label={td.start}
                 step="01"
                 value={fromDate}
                 onChange={setFromDate}
@@ -264,8 +251,8 @@ export default function DayCounterPage() {
               <button
                 className="date-swap-button"
                 type="button"
-                aria-label="Đổi ngày bắt đầu và ngày kết thúc"
-                title="Đổi hai mốc ngày"
+                aria-label={td.swap}
+                title={td.swapTitle}
                 onClick={() => {
                   setFromDate(toDate);
                   setToDate(fromDate);
@@ -277,7 +264,7 @@ export default function DayCounterPage() {
               </button>
 
               <GlassDatePicker
-                label="Ngày kết thúc"
+                label={td.end}
                 step="02"
                 value={toDate}
                 onChange={setToDate}
@@ -293,50 +280,51 @@ export default function DayCounterPage() {
               <span className="toggle-track" aria-hidden="true">
                 <span />
               </span>
-              <span>Tính cả ngày bắt đầu và ngày kết thúc</span>
+              <span>{td.includeEnd}</span>
             </label>
 
-            <div className="quick-actions" aria-label="Chọn nhanh">
-              <button type="button" onClick={() => setFromDate(toDateInputValue(today))}>
-                Hôm nay
+            <div className="quick-actions" aria-label={td.quickPicks}>
+              <button className="soft-btn" type="button" onClick={() => setFromDate(toDateInputValue(today))}>
+                {t.common.today}
               </button>
-              <button type="button" onClick={() => setToDate(toDateInputValue(addDays(today, 7)))}>
-                +7 ngày
+              <button className="soft-btn" type="button" onClick={() => setToDate(toDateInputValue(addDays(today, 7)))}>
+                {td.plus7}
               </button>
-              <button type="button" onClick={() => setToDate(toDateInputValue(addDays(today, 30)))}>
-                +30 ngày
+              <button className="soft-btn" type="button" onClick={() => setToDate(toDateInputValue(addDays(today, 30)))}>
+                {td.plus30}
               </button>
-              <button type="button" onClick={() => setToDate(toDateInputValue(addDays(today, 365)))}>
-                +1 năm
+              <button className="soft-btn" type="button" onClick={() => setToDate(toDateInputValue(addDays(today, 365)))}>
+                {td.plus1y}
               </button>
             </div>
 
             <div className="custom-offset">
-              <span className="custom-offset-label">Tùy chỉnh khoảng cách</span>
+              <span className="custom-offset-label">{td.custom}</span>
               <div className="custom-offset-controls">
                 <label>
-                  <span className="sr-only">Số lượng muốn cộng</span>
+                  <span className="sr-only">{td.amount}</span>
                   <input
                     type="number"
                     min="0"
                     inputMode="numeric"
                     value={customAmount}
                     onChange={(event) => setCustomAmount(event.target.value)}
-                    placeholder="Nhập số"
+                    placeholder={td.amountPlaceholder}
                   />
                 </label>
                 <label>
-                  <span className="sr-only">Đơn vị thời gian</span>
+                  <span className="sr-only">{td.unit}</span>
                   <select
                     value={customUnit}
                     onChange={(event) => setCustomUnit(event.target.value as OffsetUnit)}
                   >
-                    <option value="days">Ngày</option>
-                    <option value="months">Tháng</option>
-                    <option value="years">Năm</option>
+                    <option value="days">{td.units.days}</option>
+                    <option value="months">{td.units.months}</option>
+                    <option value="years">{td.units.years}</option>
                   </select>
                 </label>
                 <button
+                  className="soft-btn soft-btn-primary"
                   type="button"
                   disabled={!customAmount || Number(customAmount) < 0}
                   onClick={() => {
@@ -345,52 +333,92 @@ export default function DayCounterPage() {
                     setToDate(toDateInputValue(addOffset(parseLocalDate(fromDate), amount, customUnit)));
                   }}
                 >
-                  Áp dụng
+                  {td.apply}
                   <span aria-hidden="true">→</span>
                 </button>
               </div>
-              <small>Tính từ ngày bắt đầu đã chọn</small>
+              <small>{td.fromStart}</small>
             </div>
           </form>
-        </div>
       </section>
 
-      <GoogleAd />
-
-      <section className="result-band" aria-live="polite">
+      <section className="result-band card" aria-live="polite">
         <div className="result-main">
           <span>{rangeLabel}</span>
-          <strong>{pluralDay(result.countedDays)}</strong>
+          <strong>{td.days(n(result.countedDays))}</strong>
           <p>
             {includeEndDate
-              ? `Khoảng cách thường là ${pluralDay(result.rawDays)}, đang cộng thêm 1 ngày theo lựa chọn.`
-              : "Không tính trùng ngày kết thúc, đúng kiểu đếm khoảng cách giữa hai mốc."}
+              ? td.includeNote(td.days(n(result.rawDays)))
+              : td.excludeNote}
           </p>
         </div>
 
         <div className="metric-grid">
           <article>
-            <span>Tuần</span>
+            <span>{td.weeks}</span>
             <strong>
-              {result.weeks.toLocaleString("vi-VN")} tuần {result.weekRemainder} ngày
+              {td.weeksValue(n(result.weeks), result.weekRemainder)}
             </strong>
           </article>
           <article>
-            <span>Tháng / năm</span>
+            <span>{td.monthsYears}</span>
             <strong>
-              {result.distance.years} năm {result.distance.months} tháng {result.distance.days} ngày
+              {td.monthsYearsValue(result.distance.years, result.distance.months, result.distance.days)}
             </strong>
           </article>
           <article>
-            <span>Điểm giữa</span>
-            <strong>{formatDate(result.midpoint)}</strong>
+            <span>{td.midpoint}</span>
+            <strong>{formatDate(result.midpoint, intl)}</strong>
           </article>
           <article>
-            <span>So với hôm nay</span>
+            <span>{td.vsToday}</span>
             <strong>{todayLabel}</strong>
           </article>
         </div>
       </section>
+    </DayCounterShell>
+  );
+}
+
+function DayCounterShell({ children }: { children: React.ReactNode }) {
+  const { t } = useI18n();
+  return (
+    <main className="page-shell day-counter-shell">
+      <SiteHeader tool="dayCounter" />
+      <GoogleAd />
+      <div className="page-content">
+        {children}
+        <footer className="page-footer">{t.site.copyright}</footer>
+      </div>
     </main>
+  );
+}
+
+function DayCounterIntro() {
+  const { t } = useI18n();
+  return (
+    <div className="page-heading day-counter-copy">
+      <p className="page-kicker">{t.dayCounter.kicker}</p>
+      <h1>{t.dayCounter.title}</h1>
+      <p>{t.dayCounter.intro}</p>
+    </div>
+  );
+}
+
+/**
+ * Default dates are relative to "today" in the visitor's time zone, which a page
+ * prerendered at build time cannot know. The intro renders on the server; the
+ * calculator renders after hydration.
+ */
+export default function DayCounterTool() {
+  const isClient = useIsClient();
+  if (isClient) return <DayCounterContent />;
+
+  return (
+    <DayCounterShell>
+      <section aria-busy="true" className="day-counter-grid">
+        <DayCounterIntro />
+      </section>
+    </DayCounterShell>
   );
 }
