@@ -12,6 +12,7 @@ const zh: Dictionary = {
   tools: {
     jsonParser: { label: "JSON 解析", description: "格式化、校验、压缩和转换 JSON" },
     jsonToType: { label: "JSON 转类型", description: "从 JSON 生成 TypeScript、Go、Kotlin、Swift、C#、Java、Python 类型" },
+    jsonYaml: { label: "JSON ⇄ YAML", description: "JSON 与 YAML 互相转换" },
     htmlOnline: { label: "HTML 在线", description: "在线编写并实时预览 HTML" },
     compare: { label: "文本对比", description: "逐行对比两段文本" },
     lunarCalendar: { label: "农历", description: "越南农历，农历与公历互相转换" },
@@ -19,6 +20,14 @@ const zh: Dictionary = {
   },
 
   meta: {
+    jsonToYaml: {
+      title: "JSON 转 YAML – 在线将 JSON 转换为 YAML",
+      description: "在线将 JSON 转换为整洁、安全加引号的 YAML，也可切换为 YAML 转 JSON。显示错误行列，支持 2 或 4 空格缩进、复制和下载。",
+    },
+    yamlToJson: {
+      title: "YAML 转 JSON – 在线将 YAML 转换为 JSON",
+      description: "在线将 YAML（包括多文档、锚点和别名）转换为格式化的 JSON，显示错误行列，支持复制和下载。",
+    },
     jsonParser: {
       title: "在线 JSON 解析 – 格式化、校验、压缩 JSON",
       description: "在线格式化、校验、压缩 JSON；以树形查看、对比两个 JSON，并转换为 PHP 数组、JS 对象、Python 字典、XML 和 Markdown。",
@@ -150,6 +159,28 @@ const zh: Dictionary = {
     cannotFormat: "无法格式化无效的 JSON",
     emptyOutput: "生成的类型将显示在这里。",
     errorAt: (line, column) => `第 ${line} 行，第 ${column} 列出错`,
+  },
+
+  jsonYaml: {
+    toYaml: "JSON → YAML",
+    toJson: "YAML → JSON",
+    direction: "转换方向",
+    inputJson: "输入 JSON",
+    inputYaml: "输入 YAML",
+    placeholderJson: "在此粘贴 JSON...\n\n示例：\n{\"name\": \"John\", \"tags\": [\"a\", \"b\"]}",
+    placeholderYaml: "在此粘贴 YAML...\n\n示例：\nname: John\ntags:\n  - a\n  - b",
+    indent: "缩进",
+    spaces: (n) => `${n} 个空格`,
+    usedOutput: "已将结果移到输入并反转方向",
+    download: "下载",
+    downloaded: (file) => `已下载 ${file}`,
+    outputCopied: "已复制结果",
+    converted: (target) => `已转换为 ${target}`,
+    documents: (n) => `${n} 个 YAML 文档 → JSON 数组`,
+    invalidYaml: "YAML 无效",
+    errorAt: (line, column) => `第 ${line} 行，第 ${column} 列出错`,
+    emptyOutput: "转换结果将显示在这里。",
+    yaml11Note: "yes、on、0123 等字符串会加上引号，确保 YAML 1.1 和 1.2 解析器读取结果一致。",
   },
 
   htmlOnline: {

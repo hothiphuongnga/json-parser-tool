@@ -10,6 +10,7 @@ const en = {
   tools: {
     jsonParser: { label: "JSON Parser", description: "Format, validate, minify and convert JSON" },
     jsonToType: { label: "JSON to Type", description: "Generate TypeScript, Go, Kotlin, Swift, C#, Java and Python types from JSON" },
+    jsonYaml: { label: "JSON ⇄ YAML", description: "Convert JSON to YAML and YAML to JSON" },
     htmlOnline: { label: "HTML Online", description: "Write and preview HTML live" },
     compare: { label: "Compare", description: "Compare two texts line by line" },
     lunarCalendar: { label: "Lunar Calendar", description: "Vietnamese lunar calendar and lunar ↔ solar date conversion" },
@@ -17,6 +18,14 @@ const en = {
   },
 
   meta: {
+    jsonToYaml: {
+      title: "JSON to YAML Converter – Convert JSON to YAML Online",
+      description: "Convert JSON to clean, safely quoted YAML online, or switch to YAML to JSON. Error line and column, 2- or 4-space indent, copy and download.",
+    },
+    yamlToJson: {
+      title: "YAML to JSON Converter – Convert YAML to JSON Online",
+      description: "Convert YAML (including multi-document files, anchors and aliases) to formatted JSON online, with error line and column, copy and download.",
+    },
     jsonParser: {
       title: "JSON Parser Online – Format, Validate, Minify JSON",
       description:
@@ -150,6 +159,28 @@ const en = {
     cannotFormat: "Can't format invalid JSON",
     emptyOutput: "Generated types will appear here.",
     errorAt: (line: number, column: number) => `Error at line ${line}, column ${column}`,
+  },
+
+  jsonYaml: {
+    toYaml: "JSON → YAML",
+    toJson: "YAML → JSON",
+    direction: "Conversion direction",
+    inputJson: "Input JSON",
+    inputYaml: "Input YAML",
+    placeholderJson: "Paste JSON here...\n\nExample:\n{\"name\": \"John\", \"tags\": [\"a\", \"b\"]}",
+    placeholderYaml: "Paste YAML here...\n\nExample:\nname: John\ntags:\n  - a\n  - b",
+    indent: "Indent",
+    spaces: (n: number) => `${n} spaces`,
+    usedOutput: "Output moved to input; direction reversed",
+    download: "Download",
+    downloaded: (file: string) => `Downloaded ${file}`,
+    outputCopied: "Output copied",
+    converted: (target: string) => `Converted to ${target}`,
+    documents: (n: number) => `${n} YAML documents → JSON array`,
+    invalidYaml: "Invalid YAML",
+    errorAt: (line: number, column: number) => `Error at line ${line}, column ${column}`,
+    emptyOutput: "The converted result will appear here.",
+    yaml11Note: "Strings such as yes, on or 0123 are quoted so YAML 1.1 and 1.2 parsers read them the same way.",
   },
 
   htmlOnline: {

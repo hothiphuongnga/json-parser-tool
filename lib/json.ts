@@ -36,7 +36,7 @@ export type ParseResult =
  * code fence wrapped around the whole input. Content inside strings is never touched.
  */
 export function sanitizeInput(input: string) {
-  const trimmed = input.replace(/^﻿/, "").trim();
+  const trimmed = input.replace(/^\uFEFF/, "").trim();
   const fence = trimmed.match(/^```[\w-]*[ \t]*\r?\n([\s\S]*?)\r?\n?```$/);
   return fence ? fence[1].trim() : trimmed;
 }

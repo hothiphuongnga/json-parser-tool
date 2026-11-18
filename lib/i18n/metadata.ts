@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SITE_NAME, TOOLS, type ToolKey } from "../site";
+import { PAGES, SITE_NAME, type PageKey } from "../site";
 import { DEFAULT_LOCALE, getDictionary, hasLocale, LOCALE_LABELS, LOCALES, localePath, type Locale } from "./index";
 
 /** Validates the [lang] segment; unknown locales are a 404. */
@@ -18,9 +18,9 @@ export function languageAlternates(href: string) {
 }
 
 /** Title, description, canonical URL and hreflang links for one tool page in one locale. */
-export function toolMetadata(locale: Locale, key: ToolKey): Metadata {
+export function toolMetadata(locale: Locale, key: PageKey): Metadata {
   const t = getDictionary(locale);
-  const href = TOOLS.find((tool) => tool.key === key)?.href ?? "/";
+  const href = PAGES.find((page) => page.key === key)?.href ?? "/";
   const { title, description } = t.meta[key];
   const isHome = href === "/";
 

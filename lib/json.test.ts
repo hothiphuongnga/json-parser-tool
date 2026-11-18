@@ -3,7 +3,7 @@ import { childPath, locateOffset, parseJson, sanitizeInput } from "./json";
 
 describe("sanitizeInput", () => {
   it("strips a BOM and a wrapping code fence", () => {
-    expect(sanitizeInput('﻿```json\n{"a":1}\n```')).toBe('{"a":1}');
+    expect(sanitizeInput('\uFEFF```json\n{"a":1}\n```')).toBe('{"a":1}');
   });
 
   it("never touches string contents", () => {

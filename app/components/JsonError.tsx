@@ -4,13 +4,15 @@ import { useI18n } from "./I18nProvider";
 import type { ErrorLocation } from "@/lib/json";
 
 type JsonErrorProps = {
+  /** Heading; defaults to "Invalid JSON". */
+  title?: string;
   message: string;
   location: ErrorLocation | null;
   source: string;
 };
 
-/** Parse error with line/column and a short excerpt pointing at the problem. */
-export default function JsonError({ message, location, source }: JsonErrorProps) {
+/** Parse error (JSON, YAML…) with line/column and a short excerpt pointing at the problem. */
+export default function JsonError({ title, message, location, source }: JsonErrorProps) {
   const { t } = useI18n();
   const lines = source.split("\n");
   const excerpt = location
@@ -21,7 +23,7 @@ export default function JsonError({ message, location, source }: JsonErrorProps)
 
   return (
     <div className="error-box" role="alert">
-      <h2>{t.jsonError.title}</h2>
+      <h2>{title ?? t.jsonError.title}</h2>
       {location ? (
         <p className="error-location">
           {t.jsonError.location(location.line, location.column)}

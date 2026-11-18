@@ -12,6 +12,7 @@ const ja: Dictionary = {
   tools: {
     jsonParser: { label: "JSON パーサー", description: "JSON の整形・検証・圧縮・変換" },
     jsonToType: { label: "JSON → 型", description: "JSON から TypeScript・Go・Kotlin・Swift・C#・Java・Python の型を生成" },
+    jsonYaml: { label: "JSON ⇄ YAML", description: "JSON と YAML を相互に変換" },
     htmlOnline: { label: "HTML オンライン", description: "HTML を書いてその場でプレビュー" },
     compare: { label: "テキスト比較", description: "2 つのテキストを行単位で比較" },
     lunarCalendar: { label: "旧暦", description: "ベトナムの旧暦カレンダーと旧暦 ↔ 新暦の変換" },
@@ -19,6 +20,14 @@ const ja: Dictionary = {
   },
 
   meta: {
+    jsonToYaml: {
+      title: "JSON から YAML への変換 – オンライン変換ツール",
+      description: "JSON を安全に引用符付けされた見やすい YAML にオンラインで変換。YAML から JSON への変換にも切り替え可能。エラーの行・列表示、2/4 スペースのインデント、コピーとダウンロードに対応。",
+    },
+    yamlToJson: {
+      title: "YAML から JSON への変換 – オンライン変換ツール",
+      description: "YAML（複数ドキュメント、アンカー、エイリアスを含む）を整形済み JSON にオンラインで変換。エラーの行・列表示、コピーとダウンロードに対応。",
+    },
     jsonParser: {
       title: "JSON パーサー オンライン – JSON の整形・検証・圧縮",
       description:
@@ -151,6 +160,28 @@ const ja: Dictionary = {
     cannotFormat: "無効な JSON は整形できません",
     emptyOutput: "生成された型がここに表示されます。",
     errorAt: (line, column) => `${line} 行目、${column} 列目でエラー`,
+  },
+
+  jsonYaml: {
+    toYaml: "JSON → YAML",
+    toJson: "YAML → JSON",
+    direction: "変換の方向",
+    inputJson: "入力 JSON",
+    inputYaml: "入力 YAML",
+    placeholderJson: "ここに JSON を貼り付け...\n\n例：\n{\"name\": \"John\", \"tags\": [\"a\", \"b\"]}",
+    placeholderYaml: "ここに YAML を貼り付け...\n\n例：\nname: John\ntags:\n  - a\n  - b",
+    indent: "インデント",
+    spaces: (n) => `${n} スペース`,
+    usedOutput: "結果を入力に移し、方向を反転しました",
+    download: "ダウンロード",
+    downloaded: (file) => `${file} をダウンロードしました`,
+    outputCopied: "結果をコピーしました",
+    converted: (target) => `${target} に変換しました`,
+    documents: (n) => `${n} 個の YAML ドキュメント → JSON 配列`,
+    invalidYaml: "無効な YAML",
+    errorAt: (line, column) => `${line} 行目、${column} 列目でエラー`,
+    emptyOutput: "変換結果がここに表示されます。",
+    yaml11Note: "yes・on・0123 などの文字列は、YAML 1.1 と 1.2 のパーサーで同じように読まれるよう引用符で囲みます。",
   },
 
   htmlOnline: {

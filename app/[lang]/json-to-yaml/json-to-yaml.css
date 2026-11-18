@@ -1,0 +1,91 @@
+/* JSON ⇄ YAML — controls above the output; layout comes from .parser-shell / .workspace. */
+
+.yaml-controls {
+  min-height: var(--panel-bar-height);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-bar-bg);
+}
+
+.yaml-direction {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-muted);
+}
+
+.yaml-direction-btn {
+  min-height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.yaml-direction-btn:hover {
+  color: var(--foreground);
+}
+
+.yaml-direction-btn.active {
+  background: var(--brand);
+  color: var(--brand-contrast);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+}
+
+.yaml-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.yaml-field select {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: 0;
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.yaml-field select:focus {
+  border-color: var(--brand);
+}
+
+.yaml-actions {
+  margin-left: auto;
+}
+
+.output-panel > .yaml-note {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 7px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--panel-bar-bg);
+  color: var(--text-soft);
+  font-size: 0.76rem;
+}
+
+@media (max-width: 720px) {
+  .yaml-actions {
+    margin-left: 0;
+  }
+}
+
+.yaml-controls {
+  flex-shrink: 0;
+}

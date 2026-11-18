@@ -12,6 +12,7 @@ const vi: Dictionary = {
   tools: {
     jsonParser: { label: "JSON Parser", description: "Format, kiểm tra, minify và chuyển đổi JSON" },
     jsonToType: { label: "JSON to Type", description: "Sinh type TypeScript, Go, Kotlin, Swift, C#, Java, Python từ JSON" },
+    jsonYaml: { label: "JSON ⇄ YAML", description: "Chuyển JSON sang YAML và YAML sang JSON" },
     htmlOnline: { label: "HTML Online", description: "Viết và xem trước HTML trực tiếp" },
     compare: { label: "So sánh", description: "So sánh hai đoạn văn bản theo dòng" },
     lunarCalendar: { label: "Lịch âm", description: "Lịch âm dương, đổi ngày âm sang dương" },
@@ -19,6 +20,14 @@ const vi: Dictionary = {
   },
 
   meta: {
+    jsonToYaml: {
+      title: "Chuyển JSON sang YAML online",
+      description: "Chuyển JSON sang YAML gọn gàng, đặt ngoặc an toàn; đổi chiều sang YAML → JSON. Báo lỗi theo dòng/cột, thụt lề 2 hoặc 4, copy và tải về.",
+    },
+    yamlToJson: {
+      title: "Chuyển YAML sang JSON online",
+      description: "Chuyển YAML (kể cả nhiều document, anchor và alias) sang JSON đã format, báo lỗi theo dòng/cột, copy và tải về.",
+    },
     jsonParser: {
       title: "JSON Parser Online – Format, kiểm tra, minify JSON",
       description:
@@ -152,6 +161,28 @@ const vi: Dictionary = {
     cannotFormat: "Không thể format JSON không hợp lệ",
     emptyOutput: "Type sinh ra sẽ hiện ở đây.",
     errorAt: (line, column) => `Lỗi ở dòng ${line}, cột ${column}`,
+  },
+
+  jsonYaml: {
+    toYaml: "JSON → YAML",
+    toJson: "YAML → JSON",
+    direction: "Chiều chuyển đổi",
+    inputJson: "JSON đầu vào",
+    inputYaml: "YAML đầu vào",
+    placeholderJson: "Dán JSON vào đây...\n\nVí dụ:\n{\"name\": \"John\", \"tags\": [\"a\", \"b\"]}",
+    placeholderYaml: "Dán YAML vào đây...\n\nVí dụ:\nname: John\ntags:\n  - a\n  - b",
+    indent: "Thụt lề",
+    spaces: (n) => `${n} dấu cách`,
+    usedOutput: "Đã chuyển kết quả sang đầu vào và đảo chiều",
+    download: "Tải về",
+    downloaded: (file) => `Đã tải ${file}`,
+    outputCopied: "Đã copy kết quả",
+    converted: (target) => `Đã chuyển sang ${target}`,
+    documents: (n) => `${n} document YAML → mảng JSON`,
+    invalidYaml: "YAML không hợp lệ",
+    errorAt: (line, column) => `Lỗi ở dòng ${line}, cột ${column}`,
+    emptyOutput: "Kết quả chuyển đổi sẽ hiện ở đây.",
+    yaml11Note: "Các chuỗi như yes, on, 0123 được đặt trong ngoặc để parser YAML 1.1 và 1.2 đều đọc giống nhau.",
   },
 
   htmlOnline: {

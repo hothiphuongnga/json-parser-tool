@@ -22,7 +22,7 @@ export default function ToolNav({ className, linkClassName }: ToolNavProps) {
     <nav aria-label={t.header.toolsNav} className={className}>
       {TOOLS.map((tool) => (
         <Link
-          aria-current={current === tool.href ? "page" : undefined}
+          aria-current={current === tool.href || tool.aliases?.includes(current) ? "page" : undefined}
           className={linkClassName}
           href={href(tool.href)}
           key={tool.href}

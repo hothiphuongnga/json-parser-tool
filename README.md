@@ -6,6 +6,7 @@ Bộ công cụ online cho lập trình viên, chạy hoàn toàn trên trình d
 | --- | --- |
 | `/` | JSON Parser: format, minify, kiểm tra, dạng cây, so sánh, chuyển sang JS/PHP/Python/XML/Markdown |
 | `/json-to-type` | Sinh type TypeScript, Go, Kotlin, Swift, C#, Java, Python từ JSON |
+| `/json-to-yaml`, `/yaml-to-json` | Chuyển JSON ⇄ YAML hai chiều (anchor/alias, nhiều document, đặt ngoặc an toàn cho YAML 1.1) |
 | `/html-online` | Viết và xem trước HTML trong iframe sandbox |
 | `/compare` | So sánh hai văn bản theo dòng |
 | `/lunar-calendar` | Lịch âm dương, đổi ngày âm ↔ dương |

@@ -2630,3 +2630,25 @@ textarea:focus-visible {
 .page-shell > .page-content {
   transition: max-width 320ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Nav fits 7 tools: tighter buttons; the tool name next to the logo repeats the highlighted
+   nav item, so it gives way first on narrower desktops. */
+.tool-nav .tool-link {
+  padding-inline: 12px;
+}
+
+@media (max-width: 1499px) {
+  .brand-tool {
+    display: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  /* The top bar is sticky (not fixed) here, so the workspace must not reserve space for it. */
+  .parser-shell > .workspace,
+  .parser-shell > .type-tool-workspace,
+  .html-shell > .html-workspace {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}

@@ -12,6 +12,7 @@ const ko: Dictionary = {
   tools: {
     jsonParser: { label: "JSON 파서", description: "JSON 정렬, 검증, 압축, 변환" },
     jsonToType: { label: "JSON → 타입", description: "JSON에서 TypeScript, Go, Kotlin, Swift, C#, Java, Python 타입 생성" },
+    jsonYaml: { label: "JSON ⇄ YAML", description: "JSON과 YAML을 서로 변환" },
     htmlOnline: { label: "HTML 온라인", description: "HTML을 작성하고 바로 미리보기" },
     compare: { label: "텍스트 비교", description: "두 텍스트를 줄 단위로 비교" },
     lunarCalendar: { label: "음력", description: "베트남 음력 달력과 음력 ↔ 양력 변환" },
@@ -19,6 +20,14 @@ const ko: Dictionary = {
   },
 
   meta: {
+    jsonToYaml: {
+      title: "JSON → YAML 변환기 – 온라인으로 JSON을 YAML로 변환",
+      description: "JSON을 안전하게 따옴표 처리된 깔끔한 YAML로 온라인 변환하고, YAML → JSON으로도 전환할 수 있습니다. 오류 줄·열 표시, 2/4칸 들여쓰기, 복사와 다운로드를 지원합니다.",
+    },
+    yamlToJson: {
+      title: "YAML → JSON 변환기 – 온라인으로 YAML을 JSON으로 변환",
+      description: "YAML(여러 문서, 앵커, 별칭 포함)을 정렬된 JSON으로 온라인 변환합니다. 오류 줄·열 표시, 복사와 다운로드를 지원합니다.",
+    },
     jsonParser: {
       title: "온라인 JSON 파서 – JSON 정렬, 검증, 압축",
       description:
@@ -151,6 +160,28 @@ const ko: Dictionary = {
     cannotFormat: "잘못된 JSON은 정렬할 수 없습니다",
     emptyOutput: "생성된 타입이 여기에 표시됩니다.",
     errorAt: (line, column) => `${line}번째 줄, ${column}번째 열에서 오류`,
+  },
+
+  jsonYaml: {
+    toYaml: "JSON → YAML",
+    toJson: "YAML → JSON",
+    direction: "변환 방향",
+    inputJson: "입력 JSON",
+    inputYaml: "입력 YAML",
+    placeholderJson: "여기에 JSON을 붙여넣으세요...\n\n예:\n{\"name\": \"John\", \"tags\": [\"a\", \"b\"]}",
+    placeholderYaml: "여기에 YAML을 붙여넣으세요...\n\n예:\nname: John\ntags:\n  - a\n  - b",
+    indent: "들여쓰기",
+    spaces: (n) => `${n}칸`,
+    usedOutput: "결과를 입력으로 옮기고 방향을 바꿨습니다",
+    download: "다운로드",
+    downloaded: (file) => `${file}을(를) 다운로드했습니다`,
+    outputCopied: "결과를 복사했습니다",
+    converted: (target) => `${target}(으)로 변환했습니다`,
+    documents: (n) => `YAML 문서 ${n}개 → JSON 배열`,
+    invalidYaml: "잘못된 YAML",
+    errorAt: (line, column) => `${line}번째 줄, ${column}번째 열에서 오류`,
+    emptyOutput: "변환 결과가 여기에 표시됩니다.",
+    yaml11Note: "yes, on, 0123 같은 문자열은 YAML 1.1과 1.2 파서가 똑같이 읽도록 따옴표로 감쌉니다.",
   },
 
   htmlOnline: {
